@@ -1,8 +1,8 @@
 package fyi.pauli.solembum.networking.packet.incoming.login
 
-import com.benasher44.uuid.Uuid
-import kotlinx.serialization.Contextual
+import fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
 import kotlinx.serialization.Serializable
+import kotlin.uuid.Uuid
 
 /**
  * Packet, used to start the login sequence.
@@ -12,5 +12,5 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public data class LoginStart(
-	var name: String, var uuid: @Contextual Uuid,
-) : fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
+	var name: String, var uuid: Uuid,
+) : IncomingPacket

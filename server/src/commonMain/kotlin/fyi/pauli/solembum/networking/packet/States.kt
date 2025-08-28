@@ -1,6 +1,5 @@
 package fyi.pauli.solembum.networking.packet
 
-import fyi.pauli.prolialize.serialization.types.EnumSerial
 import kotlinx.serialization.Serializable
 
 @Serializable

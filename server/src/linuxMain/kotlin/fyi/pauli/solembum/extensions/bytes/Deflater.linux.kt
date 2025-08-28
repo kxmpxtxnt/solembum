@@ -14,7 +14,7 @@ internal actual object Compressor {
 	actual fun compress(input: ByteArray): ByteArray {
 		memScoped {
 			// Allocate output buffer with maximum possible size
-			val maxOutputSize = compressBound(input.size.toULong()).toInt()
+			val maxOutputSize = compressBound(input.size.toUInt()).toInt()
 			val output = ByteArray(maxOutputSize)
 
 			// Prepare input and output pointers

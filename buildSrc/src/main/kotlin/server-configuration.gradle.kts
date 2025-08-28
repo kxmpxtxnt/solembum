@@ -1,17 +1,17 @@
 plugins {
-  id("serialization-configuration")
+  kotlin("multiplatform")
 }
 
 kotlin {
   sourceSets {
-    val ktorVersion: String = "3.2.3"
-    val cryptographyVersion: String = "0.5.0"
-    val kotlinLoggingVersion: String = "7.0.13"
-    val koinVersion: String = "4.1.0"
+    val ktorVersion = "3.2.3"
+    val cryptographyVersion = "0.5.0"
+    val kotlinLoggingVersion = "7.0.13"
+    val koinVersion = "4.1.0"
 
     commonMain.dependencies {
-      implementation("fyi.pauli.solembum:nbt:0.1")
-      implementation("fyi.pauli.solembum:protocol:0.1")
+      implementation("fyi.pauli.solembum:nbt:0.0.1")
+      implementation("fyi.pauli.solembum:protocol:0.0.1")
 
       implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")

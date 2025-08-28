@@ -1,5 +1,6 @@
 package fyi.pauli.solembum.networking.packet.incoming.configuration
 
+import fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
 import kotlinx.serialization.Serializable
 
 /**
@@ -7,4 +8,4 @@ import kotlinx.serialization.Serializable
  * It is sent in response to the server's Finish Configuration.
  */
 @Serializable
-public class FinishConfiguration : fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
+public class FinishConfiguration : IncomingPacket

@@ -1,7 +1,5 @@
 package fyi.pauli.solembum.networking.packet.outgoing.status
 
-import fyi.pauli.prolialize.serialization.types.NumberType
-
 /**
  * The response packet for PingRequest.
  *

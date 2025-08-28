@@ -6,6 +6,7 @@ import dev.whyoleg.cryptography.algorithms.RSA
 import fyi.pauli.solembum.config.ServerConfig
 import fyi.pauli.solembum.config.loadConfig
 import fyi.pauli.solembum.entity.player.Player
+import fyi.pauli.solembum.extensions.internal.InternalSolembumApi
 import fyi.pauli.solembum.extensions.koin.KoinLogger
 import fyi.pauli.solembum.networking.packet.PacketHandle
 import fyi.pauli.solembum.networking.packet.State
@@ -19,9 +20,10 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.io.files.Path
-import kotlinx.serialization.modules.SerializersModule
+import org.koin.core.awaitAllStartJobs
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.mp.KoinPlatform
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -57,14 +59,13 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 	 * @since 01/11/2023
 	 * @see Module
 	 */
-	@InternalCoroutinesApi
+	@InternalSolembumApi
 	public val configurationsModule: Module = Module()
 
 	/**
 	 * Function to register a fileConfiguration at runtime.
 	 * You only need to call this function one time in the init block. After you can just inject it.
 	 */
-	@OptIn(InternalCoroutinesApi::class)
 	public inline fun <reified C> config(path: Path, fileConfiguration: C) {
 		configurationsModule.factory<C> {
 			loadConfig<C>(
@@ -102,7 +103,7 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 	/**
 	 * The kotlinx.serialization format for the Minecraft protocol.
 	 */
-	internal val mcProtocol = MinecraftProtocol()
+	internal val mcProtocol: MinecraftProtocol = MinecraftProtocol()
 
 	/**
 	 * Verify token, currently just example and test purposes.
@@ -185,7 +186,7 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 	 * Function used to initiate internal logic like koin or connection management.
 	 * Also executes [startup] when koin is started.
 	 */
-	@OptIn(InternalCoroutinesApi::class)
+	@InternalSolembumApi
 	internal suspend fun internalStart() = coroutineScope {
 		Platform.setupPlatform()
 
@@ -201,6 +202,8 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 				configurationsModule
 			)
 		}
+
+		KoinPlatform.getKoin().awaitAllStartJobs()
 
 		startup()
 
@@ -223,9 +226,7 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 
 			val handle = connection.handle()
 
-			logger.debug {
-				"New connection (Socket: ${connection.socket.remoteAddress})"
-			}
+			logger.debug { "New connection (Socket: ${connection.socket.remoteAddress})" }
 
 			launch {
 				val job = handle.handleIncoming()

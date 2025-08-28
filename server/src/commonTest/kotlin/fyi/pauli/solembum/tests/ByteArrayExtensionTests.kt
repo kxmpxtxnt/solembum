@@ -1,5 +1,6 @@
 package fyi.pauli.solembum.tests
 
+import fyi.pauli.solembum.extensions.bytes.Compressor
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
@@ -11,8 +12,8 @@ class ByteArrayExtensionTests {
 	fun compressAndDecompress() = runBlocking {
 		val array = "My name is Paul".toByteArray()
 
-		val compressed = _root_ide_package_.fyi.pauli.solembum.extensions.bytes.Compressor.compress(array)
-		val decompressed = _root_ide_package_.fyi.pauli.solembum.extensions.bytes.Compressor.decompress(compressed)
+		val compressed = Compressor.compress(array)
+		val decompressed = Compressor.decompress(compressed)
 
 		val equals = array.contentEquals(decompressed)
 

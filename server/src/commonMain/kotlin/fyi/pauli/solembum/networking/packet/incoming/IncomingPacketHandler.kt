@@ -1,11 +1,11 @@
 package fyi.pauli.solembum.networking.packet.incoming
 
+import fyi.pauli.solembum.networking.packet.*
 import fyi.pauli.solembum.networking.packet.incoming.configuration.*
 import fyi.pauli.solembum.networking.packet.incoming.handshaking.*
 import fyi.pauli.solembum.networking.packet.incoming.login.*
 import fyi.pauli.solembum.networking.packet.incoming.status.PingRequest
 import fyi.pauli.solembum.networking.packet.incoming.status.StatusRequest
-import fyi.pauli.solembum.networking.packet.*
 import fyi.pauli.solembum.networking.serialization.RawPacket
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer

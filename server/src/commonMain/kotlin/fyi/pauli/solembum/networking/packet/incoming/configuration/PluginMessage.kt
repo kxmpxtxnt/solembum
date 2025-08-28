@@ -1,5 +1,7 @@
 package fyi.pauli.solembum.networking.packet.incoming.configuration
 
+import fyi.pauli.solembum.models.Identifier
+import fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -11,13 +13,12 @@ import kotlinx.serialization.Serializable
  * @param data Any data, depending on the channel. The length of this array must be inferred from the packet length.
  */
 @Serializable
-public data class PluginMessage(var channel: @Contextual fyi.pauli.solembum.models.Identifier, var data: ByteArray) :
-	fyi.pauli.solembum.networking.packet.incoming.IncomingPacket {
+public data class PluginMessage(var channel: @Contextual Identifier, var data: ByteArray) : IncomingPacket {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (other == null || this::class != other::class) return false
 
-		other as fyi.pauli.solembum.networking.packet.incoming.configuration.PluginMessage
+		other as PluginMessage
 
 		if (channel != other.channel) return false
 		if (!data.contentEquals(other.data)) return false

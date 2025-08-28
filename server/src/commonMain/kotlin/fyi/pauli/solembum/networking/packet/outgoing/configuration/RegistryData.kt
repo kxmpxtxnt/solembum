@@ -1,6 +1,5 @@
 package fyi.pauli.solembum.networking.packet.outgoing.configuration
 
-import fyi.pauli.nbterialize.serialization.types.CompoundTag
 import kotlinx.serialization.Serializable
 
 /**

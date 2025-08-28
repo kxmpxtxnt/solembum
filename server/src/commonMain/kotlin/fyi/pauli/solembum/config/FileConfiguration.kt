@@ -4,6 +4,7 @@ import com.akuleshov7.ktoml.Toml
 import com.akuleshov7.ktoml.TomlIndentation
 import com.akuleshov7.ktoml.TomlInputConfig
 import com.akuleshov7.ktoml.TomlOutputConfig
+import fyi.pauli.solembum.extensions.internal.InternalSolembumApi
 import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -19,7 +20,7 @@ import kotlinx.serialization.encodeToString
  * @since 01/11/2023
  * @see Toml
  */
-@fyi.pauli.solembum.extensions.internal.InternalGaiaApi
+@InternalSolembumApi
 public val configToml: Toml = Toml(
 	TomlInputConfig(
 		ignoreUnknownNames = true,
@@ -46,7 +47,7 @@ public val configToml: Toml = Toml(
  * @author Paul Kindler
  * @since 30/10/2023
  */
-@fyi.pauli.solembum.extensions.internal.InternalGaiaApi
+@InternalSolembumApi
 public inline fun <reified C> loadConfig(path: Path, defaultConfig: C): C {
 	val fileSystem = SystemFileSystem
 	val sink = fileSystem.sink(path).buffered()
@@ -55,17 +56,17 @@ public inline fun <reified C> loadConfig(path: Path, defaultConfig: C): C {
 	val text = source.readString()
 
 	if (text.isNotEmpty()) return try {
-		_root_ide_package_.fyi.pauli.solembum.config.configToml.decodeFromString<C>(text)
+		return configToml.decodeFromString<C>(text)
 	} catch (e: Exception) {
-		_root_ide_package_.fyi.pauli.solembum.config.writeConfig(sink, defaultConfig)
+		writeConfig(sink, defaultConfig)
 	}
 
-	return _root_ide_package_.fyi.pauli.solembum.config.writeConfig(sink, defaultConfig)
+	return writeConfig(sink, defaultConfig)
 }
 
-@fyi.pauli.solembum.extensions.internal.InternalGaiaApi
+@InternalSolembumApi
 public inline fun <reified C> writeConfig(sink: Sink, config: C): C {
-	val defaultText = _root_ide_package_.fyi.pauli.solembum.config.configToml.encodeToString(config)
+	val defaultText = configToml.encodeToString(config)
 	sink.writeString(defaultText)
 	sink.flush()
 	return config

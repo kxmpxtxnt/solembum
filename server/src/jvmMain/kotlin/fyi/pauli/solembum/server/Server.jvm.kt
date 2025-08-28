@@ -7,5 +7,5 @@ import dev.whyoleg.cryptography.providers.jdk.JDK
  * Cryptography provider for the jvm platform.
  * @see CryptographyProvider.Companion.JDK
  */
-public actual val fyi.pauli.solembum.server.Server.cryptographyProvider: CryptographyProvider
+public actual val Server.cryptographyProvider: CryptographyProvider
 	get() = CryptographyProvider.JDK

@@ -1,8 +1,9 @@
 package fyi.pauli.solembum.networking.packet
 
-import fyi.pauli.prolialize.serialization.types.primitives.VarIntSerializer
-import fyi.pauli.prolialize.serialization.types.primitives.VarIntSerializer.varIntBytesCount
-import fyi.pauli.prolialize.serialization.types.primitives.VarIntSerializer.writeVarInt
+import fyi.pauli.solembum.extensions.bytes.Compressor
+import fyi.pauli.solembum.networking.packet.incoming.IncomingPacketHandler
+import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
+import fyi.pauli.solembum.networking.serialization.RawPacket
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Job
@@ -37,7 +38,7 @@ public class PacketHandle(
 	 * @since 01/11/2023
 	 * @see fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
 	 */
-	public suspend fun sendPacket(packet: fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket) {
+	public suspend fun sendPacket(packet: OutgoingPacket) {
 		withContext(server.coroutineContext) {
 			launch {
 				val encoded = server.mcProtocol.encodeToByteArray(packet)
@@ -80,8 +81,8 @@ public class PacketHandle(
 				val data = ByteArray(length - secondIntLength) { connection.input.readByte() }
 
 				server.launch {
-					_root_ide_package_.fyi.pauli.solembum.networking.packet.incoming.IncomingPacketHandler.deserializeAndHandle(
-						_root_ide_package_.fyi.pauli.solembum.networking.serialization.RawPacket.Found(secondInt, length, data),
+					IncomingPacketHandler.deserializeAndHandle(
+						RawPacket.Found(secondInt, length, data),
 						this@PacketHandle,
 						server
 					)
@@ -91,7 +92,7 @@ public class PacketHandle(
 			val compressedArray = ByteArray(length - secondIntLength) { connection.input.readByte() }
 			val decompressedBuffer = Buffer().also {
 				it.write(
-					_root_ide_package_.fyi.pauli.solembum.extensions.bytes.Compressor.decompress(compressedArray)
+					Compressor.decompress(compressedArray)
 				)
 			}
 
@@ -99,8 +100,8 @@ public class PacketHandle(
 			val idLength = varIntBytesCount(id)
 			val data = ByteArray(secondInt - idLength) { decompressedBuffer.readByte() }
 			server.launch {
-				_root_ide_package_.fyi.pauli.solembum.networking.packet.incoming.IncomingPacketHandler.deserializeAndHandle(
-					_root_ide_package_.fyi.pauli.solembum.networking.serialization.RawPacket.Found(secondInt, length, data),
+				IncomingPacketHandler.deserializeAndHandle(
+					RawPacket.Found(secondInt, length, data),
 					this@PacketHandle,
 					server
 				)
