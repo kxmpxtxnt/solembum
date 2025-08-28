@@ -13,4 +13,4 @@ jobs:
       - name: Build
         run: ./gradlew build
       - name: Publish
-        run: ./gradlew publishAllPublicationsToPauliRepository -DpauliUsername=${{ secrets.PAULI_REPOSITORY_USERNAME }} -DpauliPassword=${{ secrets.PAULI_REPOSITORY_PASSWORD }}
+        run: ./gradlew publishAllPublicationsToPauliRepository -PpauliUsername=${{ secrets.PAULI_REPOSITORY_USERNAME }} -PpauliPassword=${{ secrets.PAULI_REPOSITORY_PASSWORD }}
