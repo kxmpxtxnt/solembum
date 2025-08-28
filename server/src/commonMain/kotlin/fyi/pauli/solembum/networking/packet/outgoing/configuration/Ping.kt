@@ -1,5 +1,8 @@
 package fyi.pauli.solembum.networking.packet.outgoing.configuration
 
+import fyi.pauli.solembum.networking.packet.State
+import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
+import fyi.pauli.solembum.protocol.serialization.types.NumberType
 import kotlinx.serialization.Serializable
 
 /**
@@ -10,11 +13,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class Ping(
 	@NumberType var pingId: Int,
-) : fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket() {
+) : OutgoingPacket() {
 	override val id: Int
 		get() = 0x04
-	override val state: fyi.pauli.solembum.networking.packet.State
-		get() = _root_ide_package_.fyi.pauli.solembum.networking.packet.State.CONFIGURATION
+	override val state: State
+		get() = State.CONFIGURATION
 	override val debugName: String
 		get() = "Ping"
 }

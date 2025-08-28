@@ -1,5 +1,9 @@
 package fyi.pauli.solembum.networking.packet.outgoing.status
 
+import fyi.pauli.solembum.networking.packet.State
+import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
+import fyi.pauli.solembum.protocol.serialization.types.NumberType
+
 /**
  * The response packet for PingRequest.
  *
@@ -7,13 +11,13 @@ package fyi.pauli.solembum.networking.packet.outgoing.status
  */
 public data class PingResponse(
 	@NumberType var payload: Long,
-) : fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket() {
+) : OutgoingPacket() {
 
 	override val id: Int
 		get() = 0x01
 
-	override val state: fyi.pauli.solembum.networking.packet.State
-		get() = _root_ide_package_.fyi.pauli.solembum.networking.packet.State.STATUS
+	override val state: State
+		get() = State.STATUS
 
 	override val debugName: String
 		get() = "Ping Response"

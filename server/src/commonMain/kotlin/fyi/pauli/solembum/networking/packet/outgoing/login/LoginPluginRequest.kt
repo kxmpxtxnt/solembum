@@ -1,5 +1,9 @@
 package fyi.pauli.solembum.networking.packet.outgoing.login
 
+import fyi.pauli.solembum.models.Identifier
+import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
+import fyi.pauli.solembum.networking.serialization.IdentifierStringSerializer
+import fyi.pauli.solembum.protocol.serialization.types.Unprefixed
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,13 +19,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class LoginPluginRequest(
 	var messageId: Int,
-	var channel: @Serializable(_root_ide_package_.fyi.pauli.solembum.networking.serialization.IdentifierStringSerializer::class) fyi.pauli.solembum.models.Identifier,
+	var channel: @Serializable(IdentifierStringSerializer::class) Identifier,
 	@Unprefixed var data: ByteArray,
-) : fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket() {
+) : OutgoingPacket() {
 	override val id: Int
 		get() = 0x04
 	override val state: fyi.pauli.solembum.networking.packet.State
-		get() = _root_ide_package_.fyi.pauli.solembum.networking.packet.State.LOGIN
+		get() = fyi.pauli.solembum.networking.packet.State.LOGIN
 	override val debugName: String
 		get() = "Login Plugin Request"
 
@@ -29,7 +33,7 @@ public data class LoginPluginRequest(
 		if (this === other) return true
 		if (other == null || this::class != other::class) return false
 
-		other as fyi.pauli.solembum.networking.packet.outgoing.login.LoginPluginRequest
+		other as LoginPluginRequest
 
 		if (messageId != other.messageId) return false
 		if (channel != other.channel) return false

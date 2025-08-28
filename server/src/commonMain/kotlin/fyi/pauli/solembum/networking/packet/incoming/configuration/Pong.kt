@@ -1,5 +1,6 @@
 package fyi.pauli.solembum.networking.packet.incoming.configuration
 
+import fyi.pauli.solembum.protocol.serialization.types.NumberType
 import kotlinx.serialization.Serializable
 
 /**

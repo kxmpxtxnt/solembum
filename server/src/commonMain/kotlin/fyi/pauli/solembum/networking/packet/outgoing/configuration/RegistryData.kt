@@ -1,5 +1,7 @@
 package fyi.pauli.solembum.networking.packet.outgoing.configuration
 
+import fyi.pauli.solembum.nbt.serialization.types.CompoundTag
+import fyi.pauli.solembum.networking.packet.State
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,8 +15,8 @@ public data class RegistryData(var registryCodec: CompoundTag) :
 	fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket() {
 	override val id: Int
 		get() = 0x05
-	override val state: fyi.pauli.solembum.networking.packet.State
-		get() = _root_ide_package_.fyi.pauli.solembum.networking.packet.State.CONFIGURATION
+	override val state: State
+		get() = State.CONFIGURATION
 	override val debugName: String
 		get() = "Registry Data"
 }

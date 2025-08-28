@@ -4,6 +4,9 @@ import fyi.pauli.solembum.extensions.bytes.Compressor
 import fyi.pauli.solembum.networking.packet.incoming.IncomingPacketHandler
 import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
 import fyi.pauli.solembum.networking.serialization.RawPacket
+import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer
+import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer.varIntBytesCount
+import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer.writeVarInt
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Job
