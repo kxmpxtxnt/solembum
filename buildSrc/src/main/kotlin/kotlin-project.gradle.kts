@@ -1,4 +1,3 @@
-import org.gradle.internal.declarativedsl.intrinsics.listOf
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
@@ -17,16 +16,12 @@ kotlin {
 
   jvm()
 
-  val linuxTargets = listOf(
-    linuxX64(),
-    linuxArm64(),
-    mingwX64()
-  )
+  linuxX64()
+  linuxArm64()
+  mingwX64()
 
-  val macosTargets = listOf(
-    macosX64(),
-    macosArm64()
-  )
+  macosX64()
+  macosArm64()
 
   applyDefaultHierarchyTemplate()
 
