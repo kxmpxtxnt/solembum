@@ -10,8 +10,8 @@ kotlin {
     val koinVersion = "4.1.0"
 
     commonMain.dependencies {
-      implementation("fyi.pauli.solembum:nbt:0.0.1")
-      implementation("fyi.pauli.solembum:protocol:0.0.1")
+      implementation(project(":nbt"))
+      implementation(project(":protocol"))
 
       implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")

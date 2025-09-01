@@ -10,6 +10,7 @@ import fyi.pauli.solembum.extensions.internal.InternalSolembumApi
 import fyi.pauli.solembum.extensions.koin.KoinLogger
 import fyi.pauli.solembum.networking.packet.PacketHandle
 import fyi.pauli.solembum.networking.packet.State
+import fyi.pauli.solembum.protocol.MinecraftProtocol
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*

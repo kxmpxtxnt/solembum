@@ -1,25 +1,28 @@
 package fyi.pauli.solembum.extensions.bytes
 
+import io.ktor.utils.io.pool.DirectByteBufferPool
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
+import java.util.zip.DataFormatException
 import java.util.zip.Deflater
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 import java.util.zip.Inflater
 
 internal actual object Compressor {
 	actual fun compress(input: ByteArray): ByteArray {
-		val deflater = Deflater()
-		val output = ByteArray(0)
-		deflater.setInput(input)
-		deflater.finish()
-		deflater.deflate(output)
-
-		return output
+		val byteStream = ByteArrayOutputStream()
+		GZIPOutputStream(byteStream).use { stream: GZIPOutputStream ->
+			stream.write(input)
+		}
+		return byteStream.toByteArray()
 	}
 
 	actual fun decompress(input: ByteArray): ByteArray {
-		val inflater = Inflater()
-		val output = ByteArray(0)
-		inflater.setInput(input)
-		inflater.inflate(output)
-
-		return output
+		val byteStream = ByteArrayInputStream(input)
+		GZIPInputStream(byteStream).use { stream ->
+			return stream.readBytes()
+		}
 	}
 }

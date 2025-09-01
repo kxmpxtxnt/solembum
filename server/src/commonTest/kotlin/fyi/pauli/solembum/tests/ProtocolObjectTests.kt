@@ -3,6 +3,9 @@ package fyi.pauli.solembum.tests
 import fyi.pauli.solembum.entity.player.Property
 import fyi.pauli.solembum.entity.player.UserProfile
 import fyi.pauli.solembum.models.Identifier
+import fyi.pauli.solembum.nbt.extensions.buildCompoundTag
+import fyi.pauli.solembum.nbt.serialization.types.CompoundTag
+import fyi.pauli.solembum.protocol.MinecraftProtocol
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
