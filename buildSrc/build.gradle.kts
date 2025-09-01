@@ -17,4 +17,6 @@ dependencies {
 
   compileOnly(plugin("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
   runtimeOnly(plugin("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
+
+  implementation(plugin("com.vanniktech.maven.publish", "0.34.0"))
 }

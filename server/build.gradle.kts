@@ -1,5 +1,6 @@
 plugins {
   `kotlin-project`
+  `maven-publishing`
   `server-configuration`
   `serialization-configuration`
 }

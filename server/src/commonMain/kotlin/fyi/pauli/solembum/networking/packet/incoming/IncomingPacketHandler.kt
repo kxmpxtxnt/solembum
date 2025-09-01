@@ -7,6 +7,7 @@ import fyi.pauli.solembum.networking.packet.incoming.login.*
 import fyi.pauli.solembum.networking.packet.incoming.status.PingRequest
 import fyi.pauli.solembum.networking.packet.incoming.status.StatusRequest
 import fyi.pauli.solembum.networking.serialization.RawPacket
+import fyi.pauli.solembum.server.Server
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
@@ -16,7 +17,7 @@ public object IncomingPacketHandler {
 	internal suspend fun deserializeAndHandle(
 		rawPacket: RawPacket,
 		packetHandle: PacketHandle,
-		server: fyi.pauli.solembum.server.Server,
+		server: Server,
 	) {
 		if (rawPacket is RawPacket.NotFound) {
 			server.logger.warn {
@@ -31,7 +32,7 @@ public object IncomingPacketHandler {
 				?: error("Cannot find packet with id ${rawPacket.id} in state ${packetHandle.state} (Socket: ${packetHandle.connection.socket.remoteAddress})")
 
 		server.logger.debug {
-			"RECEIVED packet ${clientPacket.identifier.debuggingName} with id ${rawPacket.id} in state ${packetHandle.state.debugName} (Socket: ${packetHandle.connection.socket.remoteAddress})"
+			"RECEIVED ${clientPacket.identifier.debuggingName}(${rawPacket.id}) in state ${packetHandle.state.debugName} (Socket: ${packetHandle.connection.socket.remoteAddress})"
 		}
 
 		val packet = server.mcProtocol.decodeFromByteArray(clientPacket.kClass.serializer(), rawPacket.data)

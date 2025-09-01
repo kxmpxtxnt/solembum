@@ -1,14 +1,16 @@
 package fyi.pauli.solembum.networking.packet.incoming
 
+import fyi.pauli.solembum.models.Identifier
+import fyi.pauli.solembum.networking.packet.PacketReceiver
 import kotlin.reflect.KClass
 
 public object PacketRegistry {
-	public val incomingPackets: MutableList<fyi.pauli.solembum.networking.packet.incoming.RegisteredIncomingPacket> =
+	public val incomingPackets: MutableList<RegisteredIncomingPacket> =
 		mutableListOf()
 }
 
 public data class RegisteredIncomingPacket(
-	val identifier: fyi.pauli.solembum.networking.packet.incoming.PacketIdentifier,
-	var kClass: KClass<out fyi.pauli.solembum.networking.packet.incoming.IncomingPacket>,
-	val receivers: MutableMap<fyi.pauli.solembum.models.Identifier, fyi.pauli.solembum.networking.packet.PacketReceiver<fyi.pauli.solembum.networking.packet.incoming.IncomingPacket>>,
+	val identifier: PacketIdentifier,
+	var kClass: KClass<out IncomingPacket>,
+	val receivers: MutableMap<Identifier, PacketReceiver<IncomingPacket>>,
 )

@@ -10,52 +10,53 @@ kotlin {
     val koinVersion = "4.1.0"
 
     commonMain.dependencies {
-      implementation(project(":nbt"))
-      implementation(project(":protocol"))
+      api(project(":nbt"))
+      api(project(":protocol"))
 
-      implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-      implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-      implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+      api("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+      api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
-      implementation("io.ktor:ktor-network:$ktorVersion")
-      implementation("io.ktor:ktor-server-cio:$ktorVersion")
-      implementation("io.ktor:ktor-server-core:$ktorVersion")
-      implementation("io.ktor:ktor-server-websockets:$ktorVersion")
+      api("io.ktor:ktor-network:$ktorVersion")
+      api("io.ktor:ktor-server-cio:$ktorVersion")
+      api("io.ktor:ktor-server-core:$ktorVersion")
+      api("io.ktor:ktor-server-websockets:$ktorVersion")
 
-      implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+      api("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-      implementation("io.ktor:ktor-client-cio:$ktorVersion")
-      implementation("io.ktor:ktor-client-core:$ktorVersion")
-      implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+      api("io.ktor:ktor-client-cio:$ktorVersion")
+      api("io.ktor:ktor-client-core:$ktorVersion")
+      api("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
-      implementation("dev.whyoleg.cryptography:cryptography-core:$cryptographyVersion")
+      api("dev.whyoleg.cryptography:cryptography-core:$cryptographyVersion")
+      api("dev.whyoleg.cryptography:cryptography-provider-optimal:${cryptographyVersion}")
 
-      implementation("com.akuleshov7:ktoml-core:0.7.1")
+      api("com.akuleshov7:ktoml-core:0.7.1")
 
-      implementation("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
+      api("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
 
-      implementation("io.insert-koin:koin-core:$koinVersion")
-      implementation("io.insert-koin:koin-core-coroutines:${koinVersion}")
+      api("io.insert-koin:koin-core:$koinVersion")
+      api("io.insert-koin:koin-core-coroutines:${koinVersion}")
     }
 
     commonTest.dependencies {
-      implementation("io.insert-koin:koin-test:$koinVersion")
+      api("io.insert-koin:koin-test:$koinVersion")
     }
 
     jvmMain.dependencies {
-      implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:${cryptographyVersion}")
+      api("dev.whyoleg.cryptography:cryptography-provider-jdk:${cryptographyVersion}")
     }
 
     jvmTest.dependencies {
-      implementation("org.junit.jupiter:junit-jupiter-engine:5.13.4")
+      api("org.junit.jupiter:junit-jupiter-engine:5.13.4")
     }
 
     macosMain.dependencies {
-      implementation("dev.whyoleg.cryptography:cryptography-provider-apple:${cryptographyVersion}")
+      api("dev.whyoleg.cryptography:cryptography-provider-apple:${cryptographyVersion}")
     }
 
     linuxMain.dependencies {
-      implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-api:${cryptographyVersion}")
+      api("dev.whyoleg.cryptography:cryptography-provider-openssl3-api:${cryptographyVersion}")
     }
   }
 }

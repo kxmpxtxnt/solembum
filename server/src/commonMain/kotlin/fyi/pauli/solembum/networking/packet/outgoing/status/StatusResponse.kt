@@ -1,5 +1,7 @@
 package fyi.pauli.solembum.networking.packet.outgoing.status
 
+import fyi.pauli.solembum.networking.packet.State
+import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
 import kotlinx.serialization.Serializable
 
 /**
@@ -10,12 +12,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class StatusResponse(
 	var status: String,
-) : fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket() {
+) : OutgoingPacket() {
 	override val id: Int
 		get() = 0x00
 
-	override val state: fyi.pauli.solembum.networking.packet.State
-		get() = _root_ide_package_.fyi.pauli.solembum.networking.packet.State.STATUS
+	override val state: State
+		get() = State.STATUS
 
 	override val debugName: String
 		get() = "Status Response"

@@ -7,6 +7,7 @@ import fyi.pauli.solembum.networking.serialization.RawPacket
 import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer
 import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer.varIntBytesCount
 import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer.writeVarInt
+import fyi.pauli.solembum.server.Server
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Job
@@ -27,11 +28,11 @@ import kotlinx.serialization.encodeToByteArray
  * @since 01/11/2023
  */
 public class PacketHandle(
-	public var state: fyi.pauli.solembum.networking.packet.State,
+	public var state: State,
 	public val connection: Connection,
 	public var threshold: Int = -1,
 	public var compression: Boolean = threshold > 0,
-	internal val server: fyi.pauli.solembum.server.Server,
+	internal val server: Server,
 ) {
 
 	/**
@@ -49,16 +50,16 @@ public class PacketHandle(
 
 				if (!compression) {
 					connection.output.writeFully(Buffer().also { buffer ->
-						writeVarInt(length) { buffer.writeByte(it) }
+						writeVarInt(length, buffer::writeByte)
 						buffer.write(encoded)
 					}.readByteArray())
 				} else {
 					val lengthLength = varIntBytesCount(length)
-					val compressed = _root_ide_package_.fyi.pauli.solembum.extensions.bytes.Compressor.compress(encoded)
+					val compressed = Compressor.compress(encoded)
 					val compressedLength = compressed.size
 					connection.output.writeFully(Buffer().also { buffer ->
-						writeVarInt(compressedLength + lengthLength) { buffer.writeByte(it) }
-						writeVarInt(length) { buffer.writeByte(it) }
+						writeVarInt(compressedLength + lengthLength, buffer::writeByte)
+						writeVarInt(length, buffer::writeByte)
 						buffer.write(compressed)
 					}.readByteArray())
 					connection.output.flush()
@@ -81,7 +82,9 @@ public class PacketHandle(
 			val secondIntLength = varIntBytesCount(secondInt)
 
 			if (!compression) {
-				val data = ByteArray(length - secondIntLength) { connection.input.readByte() }
+				val size = length - secondIntLength
+
+				val data = if (size > 0) ByteArray(size) { connection.input.readByte() } else byteArrayOf()
 
 				server.launch {
 					IncomingPacketHandler.deserializeAndHandle(
@@ -90,24 +93,20 @@ public class PacketHandle(
 						server
 					)
 				}
+
+				continue
 			}
 
+			println("Why are we here")
+
 			val compressedArray = ByteArray(length - secondIntLength) { connection.input.readByte() }
-			val decompressedBuffer = Buffer().also {
-				it.write(
-					Compressor.decompress(compressedArray)
-				)
-			}
+			val decompressedBuffer = Buffer().also { it.write(Compressor.decompress(compressedArray)) }
 
 			val id = VarIntSerializer.readVarInt { decompressedBuffer.readByte() }
 			val idLength = varIntBytesCount(id)
 			val data = ByteArray(secondInt - idLength) { decompressedBuffer.readByte() }
 			server.launch {
-				IncomingPacketHandler.deserializeAndHandle(
-					RawPacket.Found(secondInt, length, data),
-					this@PacketHandle,
-					server
-				)
+				IncomingPacketHandler.deserializeAndHandle(RawPacket.Found(secondInt, length, data), this@PacketHandle, server)
 			}
 		}
 	}

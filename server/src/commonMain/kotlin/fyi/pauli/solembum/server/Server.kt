@@ -21,8 +21,13 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.io.files.Path
+import org.koin.core.Koin
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.awaitAllStartJobs
+import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
+import org.koin.core.coroutine.KoinCoroutinesEngine
+import org.koin.core.logger.KOIN_TAG
 import org.koin.core.module.Module
 import org.koin.mp.KoinPlatform
 import kotlin.coroutines.CoroutineContext
@@ -50,7 +55,7 @@ public suspend fun <S : Server> serve(server: S, init: S.() -> Unit = {}): Unit 
  * @author Paul Kindler
  * @since 14/11/2023
  */
-public abstract class Server(private val serverName: String) : CoroutineScope {
+public abstract class Server(private val serverName: String) : CoroutineScope, KoinComponent {
 
 	/**
 	 * Module for all configurations you need to have at runtime.
@@ -187,6 +192,7 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 	 * Function used to initiate internal logic like koin or connection management.
 	 * Also executes [startup] when koin is started.
 	 */
+	@OptIn(KoinInternalApi::class)
 	@InternalSolembumApi
 	internal suspend fun internalStart() = coroutineScope {
 		Platform.setupPlatform()
@@ -203,8 +209,6 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 				configurationsModule
 			)
 		}
-
-		KoinPlatform.getKoin().awaitAllStartJobs()
 
 		startup()
 
@@ -227,7 +231,7 @@ public abstract class Server(private val serverName: String) : CoroutineScope {
 
 			val handle = connection.handle()
 
-			logger.debug { "New connection (Socket: ${connection.socket.remoteAddress})" }
+			logger.debug { "CONNECTED (Socket: ${connection.socket.remoteAddress})" }
 
 			launch {
 				val job = handle.handleIncoming()

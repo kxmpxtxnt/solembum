@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public data class ServerConfig(
-	val server: fyi.pauli.solembum.config.Server = _root_ide_package_.fyi.pauli.solembum.config.Server(),
+	val server: Server = Server(),
 )
 
 /**
@@ -45,10 +45,9 @@ public data class Server(
 	 */
 	public fun base64FavIcon(): String {
 		val path = Path(favIconPath)
-		val fileSystem = SystemFileSystem
-		val source = fileSystem.source(path).buffered()
+		val source = SystemFileSystem.source(path).buffered()
 
-		if (fileSystem.exists(path)) return ""
+		if (SystemFileSystem.exists(path)) return ""
 
 		return source.readByteArray().encodeBase64()
 	}

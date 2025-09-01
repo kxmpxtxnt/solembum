@@ -1,5 +1,6 @@
 package fyi.pauli.solembum.networking.packet.incoming.status
 
+import fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
 import kotlinx.serialization.Serializable
 
 /**
@@ -7,4 +8,4 @@ import kotlinx.serialization.Serializable
  * The server won't respond otherwise.
  */
 @Serializable
-public class StatusRequest : fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
+public class StatusRequest : IncomingPacket
