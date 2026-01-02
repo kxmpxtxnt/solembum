@@ -7,7 +7,7 @@ kotlin {
     val ktorVersion = "3.3.3"
     val cryptographyVersion = "0.5.0"
     val kotlinLoggingVersion = "7.0.14"
-    val koinVersion = "4.2.0"
+    val koinVersion = "4.1.1"
 
     commonMain.dependencies {
       api(project(":nbt"))

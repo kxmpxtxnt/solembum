@@ -21,15 +21,10 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.io.files.Path
-import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.awaitAllStartJobs
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
-import org.koin.core.coroutine.KoinCoroutinesEngine
-import org.koin.core.logger.KOIN_TAG
 import org.koin.core.module.Module
-import org.koin.mp.KoinPlatform
 import kotlin.coroutines.CoroutineContext
 
 /**
