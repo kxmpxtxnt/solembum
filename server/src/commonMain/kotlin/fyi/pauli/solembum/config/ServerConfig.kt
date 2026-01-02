@@ -45,9 +45,10 @@ public data class Server(
 	 */
 	public fun base64FavIcon(): String {
 		val path = Path(favIconPath)
-		val source = SystemFileSystem.source(path).buffered()
 
-		if (SystemFileSystem.exists(path)) return ""
+		if (!SystemFileSystem.exists(path)) return ""
+
+		val source = SystemFileSystem.source(path).buffered()
 
 		return source.readByteArray().encodeBase64()
 	}

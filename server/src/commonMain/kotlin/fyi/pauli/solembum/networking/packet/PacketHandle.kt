@@ -10,10 +10,13 @@ import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializ
 import fyi.pauli.solembum.server.Server
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
-import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
 /**
  * Handler class for any established connection,
@@ -33,32 +36,31 @@ public class PacketHandle(
 	internal val server: Server,
 ) {
 
-	/**
-	 * Function to send a specific packet to the connected socket.
-	 * @param packet packet to send.
-	 * @author Paul Kindler
-	 * @since 01/11/2023
-	 * @see fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
-	 */
+
+	@Suppress("unchecked_cast")
 	public suspend fun sendPacket(packet: OutgoingPacket) {
-		val encoded = server.mcProtocol.encodeToByteArray(packet)
-		val length = encoded.size
+		@OptIn(InternalSerializationApi::class)
+		val serializer = packet::class.serializer() as KSerializer<OutgoingPacket>
+		val data = server.mcProtocol.encodeToByteArray(serializer, packet)
+		val length = data.size + varIntBytesCount(packet.id)
 
 		if (!compression) {
 			connection.output.writeFully(Buffer().also { buffer ->
 				writeVarInt(length, buffer::writeByte)
-				buffer.write(encoded)
+				writeVarInt(packet.id, buffer::writeByte)
+				buffer.write(data)
 			}.readByteArray())
 		} else {
-			val lengthLength = varIntBytesCount(length)
-			val compressed = Compressor.compress(encoded)
-			val compressedLength = compressed.size
-			connection.output.writeFully(Buffer().also { buffer ->
-				writeVarInt(compressedLength + lengthLength, buffer::writeByte)
-				writeVarInt(length, buffer::writeByte)
-				buffer.write(compressed)
-			}.readByteArray())
-			connection.output.flush()
+			TODO("Correct sending!")
+//			val lengthLength = varIntBytesCount(length)
+//			val compressedData = Compressor.compress(data)
+//			val compressedLength = compressedData.size
+//			connection.output.writeFully(Buffer().also { buffer ->
+//				writeVarInt(compressedLength + lengthLength, buffer::writeByte)
+//				writeVarInt(length, buffer::writeByte)
+//				buffer.write(compressedData)
+//			}.readByteArray())
+//			connection.output.flush()
 		}
 
 		server.logger.debug { "SENT packet ${packet.debugName} with id ${packet.id} in state ${packet.state}. [Compression: $compression, Socket: ${connection.socket.remoteAddress}]" }

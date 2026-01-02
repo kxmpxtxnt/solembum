@@ -24,10 +24,8 @@ public object StatusRequestReceiver : PacketReceiver<StatusRequest>, KoinCompone
 		server: Server,
 	) {
 
-
 		packetHandle.sendPacket(StatusResponse(json.encodeToString(ServerPreview())))
 
-		server.logger.debug { "Status Receiver" }
 	}
 
 	@Serializable
@@ -42,8 +40,8 @@ public object StatusRequestReceiver : PacketReceiver<StatusRequest>, KoinCompone
 
 		@Serializable
 		public class Version(
-			public var name: String = "1.20.2",
-			public var protocol: Int = 764,
+			public var name: String = "1.21.11",
+			public var protocol: Int = 774,
 		)
 
 		@Serializable

@@ -10,8 +10,5 @@ public object PingRequestReceiver : PacketReceiver<PingRequest> {
 	override suspend fun onReceive(packet: PingRequest, packetHandle: PacketHandle, server: Server) {
 
 		packetHandle.sendPacket(PingResponse(packet.timestamp))
-
-		server.logger.debug { "Ping Receiver" }
-
 	}
 }
