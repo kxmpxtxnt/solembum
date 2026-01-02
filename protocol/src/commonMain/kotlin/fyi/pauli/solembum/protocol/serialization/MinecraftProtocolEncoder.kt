@@ -7,9 +7,9 @@ import fyi.pauli.solembum.protocol.desc.extractProtocolDescriptor
 import fyi.pauli.solembum.protocol.serialization.types.Unprefixed
 import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftEnumType
 import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftNumberType
-import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftStringEncoder.writeString
-import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer.writeVarInt
-import fyi.pauli.solembum.protocol.serialization.types.primitives.VarLongSerializer
+import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftString.write
+import fyi.pauli.solembum.protocol.serialization.types.primitives.VarInt.write
+import fyi.pauli.solembum.protocol.serialization.types.primitives.VarLong
 import kotlinx.io.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
@@ -32,14 +32,14 @@ internal class MinecraftProtocolEncoder(
 	@OptIn(ExperimentalSerializationApi::class)
 	override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
 		if (!descriptor.annotations.map { it::class }
-				.contains(Unprefixed::class)) writeVarInt(collectionSize) { output.writeByte(it) }
+				.contains(Unprefixed::class)) write(collectionSize) { output.writeByte(it) }
 		return super.beginCollection(descriptor, collectionSize)
 	}
 
 	override fun encodeTaggedInt(tag: ProtocolDesc, value: Int) {
 		when (tag.type) {
 			MinecraftNumberType.DEFAULT -> output.writeInt(value)
-			MinecraftNumberType.VAR -> writeVarInt(value) { output.writeByte(it) }
+			MinecraftNumberType.VAR -> write(value) { output.writeByte(it) }
 			MinecraftNumberType.UNSIGNED -> output.writeUInt(value.toUInt())
 		}
 	}
@@ -61,7 +61,7 @@ internal class MinecraftProtocolEncoder(
 	override fun encodeTaggedLong(tag: ProtocolDesc, value: Long) {
 		when (tag.type) {
 			MinecraftNumberType.DEFAULT -> output.writeLong(value)
-			MinecraftNumberType.VAR -> VarLongSerializer.writeVarLong(value) { output.writeByte(it) }
+			MinecraftNumberType.VAR -> VarLong.write(value) { output.writeByte(it) }
 			MinecraftNumberType.UNSIGNED -> output.writeULong(value.toULong())
 		}
 	}
@@ -79,7 +79,7 @@ internal class MinecraftProtocolEncoder(
 	}
 
 	override fun encodeTaggedString(tag: ProtocolDesc, value: String) {
-		writeString(value, { output.writeByte(it) }) { output.write(it) }
+		write(value, { output.writeByte(it) }) { output.write(it) }
 	}
 
 	@OptIn(ExperimentalSerializationApi::class)
@@ -87,11 +87,11 @@ internal class MinecraftProtocolEncoder(
 		val enumDesc = extractEnumElementDescriptor(enumDescriptor, ordinal)
 
 		when (extractEnumDescriptor(enumDescriptor).type) {
-			MinecraftEnumType.VAR_INT -> writeVarInt(enumDesc.ordinal) { output.writeByte(it) }
+			MinecraftEnumType.VAR_INT -> write(enumDesc.ordinal) { output.writeByte(it) }
 			MinecraftEnumType.BYTE -> output.writeByte(enumDesc.ordinal.toByte())
 			MinecraftEnumType.UNSIGNED_BYTE -> output.writeUByte(enumDesc.ordinal.toUByte())
 			MinecraftEnumType.INT -> output.writeInt(enumDesc.ordinal)
-			MinecraftEnumType.STRING -> writeString(
+			MinecraftEnumType.STRING -> write(
 				enumDescriptor.getElementName(ordinal),
 				{ output.writeByte(it) }) { output.write(it) }
 		}

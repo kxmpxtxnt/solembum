@@ -13,8 +13,8 @@ public const val CONTINUE_BIT: Byte = 0x80.toByte() // 128
 /**
  * Class to de-/serialize VarInts.
  */
-public object VarIntSerializer {
-	public inline fun readVarInt(
+public object VarInt {
+	public inline fun read(
 		readByte: () -> Byte,
 	): Int {
 		var value = 0
@@ -35,7 +35,7 @@ public object VarIntSerializer {
 		return value
 	}
 
-	public inline fun writeVarInt(
+	public inline fun write(
 		value: Int,
 		writeByte: (Byte) -> Unit,
 	) {
@@ -52,17 +52,17 @@ public object VarIntSerializer {
 	}
 
 	@Suppress("unused")
-	public fun varIntBytesCount(
+	public fun bytesCount(
 		value: Int,
 	): Int {
 		var counter = 0
-		writeVarInt(value) { counter++ }
+		write(value) { counter++ }
 		return counter
 	}
 }
 
-public object VarLongSerializer {
-	public inline fun readVarLong(
+public object VarLong {
+	public inline fun read(
 		readByte: () -> Byte,
 	): Long {
 		var value: Long = 0
@@ -83,7 +83,7 @@ public object VarLongSerializer {
 		return value
 	}
 
-	public inline fun writeVarLong(
+	public inline fun write(
 		value: Long,
 		writeByte: (Byte) -> Unit,
 	) {
@@ -99,11 +99,11 @@ public object VarLongSerializer {
 	}
 
 	@Suppress("unused")
-	public fun varLongBytesCount(
+	public fun bytesCount(
 		value: Long,
 	): Int {
 		var counter = 0
-		writeVarLong(value) { counter++ }
+		write(value) { counter++ }
 		return counter
 	}
 }

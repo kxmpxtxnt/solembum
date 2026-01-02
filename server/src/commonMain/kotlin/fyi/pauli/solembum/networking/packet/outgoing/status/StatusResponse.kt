@@ -2,7 +2,6 @@ package fyi.pauli.solembum.networking.packet.outgoing.status
 
 import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
-import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
 /**

@@ -5,7 +5,6 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ByteArrayExtensionTests {
 

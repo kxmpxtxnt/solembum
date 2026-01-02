@@ -5,9 +5,9 @@ import fyi.pauli.solembum.network.receivers.handshake.HandshakeReceiver
 import fyi.pauli.solembum.network.receivers.status.PingRequestReceiver
 import fyi.pauli.solembum.network.receivers.status.StatusRequestReceiver
 import fyi.pauli.solembum.networking.packet.PacketReceiver
+import fyi.pauli.solembum.networking.packet.PacketRegistry
 import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
-import fyi.pauli.solembum.networking.packet.PacketRegistry
 
 public object PacketReceivers {
 	private val identifier = Identifier("Werecat", "vanilla-receiver")

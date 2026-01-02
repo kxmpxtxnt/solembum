@@ -8,7 +8,7 @@ import fyi.pauli.solembum.protocol.serialization.types.NumberType
 import fyi.pauli.solembum.protocol.serialization.types.StringLength
 import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftEnumType
 import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftNumberType
-import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftStringEncoder
+import fyi.pauli.solembum.protocol.serialization.types.primitives.MinecraftString
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -17,7 +17,7 @@ internal fun extractProtocolDescriptor(
 ): ProtocolDesc {
 	val format = descriptor.findElementAnnotation<NumberType>(index)?.type ?: MinecraftNumberType.VAR
 	val maxStringLength =
-		descriptor.findElementAnnotation<StringLength>(index)?.maxLength ?: MinecraftStringEncoder.MAX_STRING_LENGTH
+		descriptor.findElementAnnotation<StringLength>(index)?.maxLength ?: MinecraftString.MAX_STRING_LENGTH
 	return ProtocolDesc(format, maxStringLength)
 }
 
@@ -27,7 +27,7 @@ internal fun extractEnumDescriptor(
 ): ProtocolEnumDesc {
 	val format = descriptor.findEntityAnnotation<EnumType>()?.type ?: MinecraftEnumType.VAR_INT
 	val stringMaxLength =
-		descriptor.findEntityAnnotation<StringLength>()?.maxLength ?: MinecraftStringEncoder.MAX_STRING_LENGTH
+		descriptor.findEntityAnnotation<StringLength>()?.maxLength ?: MinecraftString.MAX_STRING_LENGTH
 	return ProtocolEnumDesc(format, stringMaxLength)
 }
 

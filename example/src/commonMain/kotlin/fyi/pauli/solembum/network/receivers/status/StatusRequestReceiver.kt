@@ -3,7 +3,6 @@ package fyi.pauli.solembum.network.receivers.status
 import fyi.pauli.solembum.Werecat.json
 import fyi.pauli.solembum.config.ServerConfig
 import fyi.pauli.solembum.entity.player.Player
-import fyi.pauli.solembum.network.PacketReceivers
 import fyi.pauli.solembum.networking.packet.PacketHandle
 import fyi.pauli.solembum.networking.packet.PacketReceiver
 import fyi.pauli.solembum.networking.packet.incoming.status.StatusRequest

@@ -2,20 +2,20 @@ package fyi.pauli.solembum.protocol.serialization.types.primitives
 
 import fyi.pauli.solembum.protocol.exceptions.MinecraftProtocolDecodingException
 import fyi.pauli.solembum.protocol.exceptions.MinecraftProtocolEncodingException
-import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer.readVarInt
-import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializer.writeVarInt
+import fyi.pauli.solembum.protocol.serialization.types.primitives.VarInt.read
+import fyi.pauli.solembum.protocol.serialization.types.primitives.VarInt.write
 
-public object MinecraftStringEncoder {
+public object MinecraftString {
 
 	public const val MAX_STRING_LENGTH: Int = 32767
 
 	@ExperimentalStdlibApi
-	public inline fun readString(
+	public inline fun read(
 		maxLength: Int = MAX_STRING_LENGTH,
 		readByte: () -> Byte,
 		readBytes: (length: Int) -> ByteArray,
 	): String {
-		val length: Int = readVarInt(readByte)
+		val length: Int = read(readByte)
 		return if (length > maxLength * 4) {
 			throw MinecraftProtocolDecodingException("The received encoded string buffer length is longer than maximum allowed ($length > ${maxLength * 4})")
 		} else if (length < 0) {
@@ -30,7 +30,7 @@ public object MinecraftStringEncoder {
 		}
 	}
 
-	public inline fun writeString(
+	public inline fun write(
 		string: String, writeByte: (Byte) -> Unit, writeFully: (ByteArray) -> Unit,
 	) {
 		val bytes = string.encodeToByteArray()
@@ -38,7 +38,7 @@ public object MinecraftStringEncoder {
 		if (bytes.size > MAX_STRING_LENGTH) {
 			throw MinecraftProtocolEncodingException("String too big (was ${bytes.size} bytes encoded, max $MAX_STRING_LENGTH)")
 		} else {
-			writeVarInt(bytes.size, writeByte)
+			write(bytes.size, writeByte)
 			writeFully(bytes)
 		}
 	}

@@ -1,9 +1,15 @@
 package fyi.pauli.solembum.networking.packet.incoming
 
-import fyi.pauli.solembum.networking.packet.*
+import fyi.pauli.solembum.networking.packet.PacketHandle
+import fyi.pauli.solembum.networking.packet.PacketRegistry
+import fyi.pauli.solembum.networking.packet.RegisteredIncomingPacket
+import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.networking.packet.incoming.configuration.*
-import fyi.pauli.solembum.networking.packet.incoming.handshaking.*
-import fyi.pauli.solembum.networking.packet.incoming.login.*
+import fyi.pauli.solembum.networking.packet.incoming.handshaking.Handshake
+import fyi.pauli.solembum.networking.packet.incoming.login.EncryptionResponse
+import fyi.pauli.solembum.networking.packet.incoming.login.LoginAcknowledged
+import fyi.pauli.solembum.networking.packet.incoming.login.LoginStart
+import fyi.pauli.solembum.networking.packet.incoming.login.PluginMessageResponse
 import fyi.pauli.solembum.networking.packet.incoming.status.PingRequest
 import fyi.pauli.solembum.networking.packet.incoming.status.StatusRequest
 import fyi.pauli.solembum.networking.serialization.RawPacket

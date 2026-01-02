@@ -13,7 +13,7 @@ internal actual object Compressor {
 	@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 	actual fun compress(input: ByteArray): ByteArray = memScoped {
 		// Allocate output buffer with maximum possible size
- 		val sourceLen = input.size.toUInt().toULong() as uLong
+		val sourceLen = input.size.toUInt().toULong() as uLong
 		val maxOutputSize = compressBound(sourceLen).toInt()
 		val output = ByteArray(maxOutputSize)
 
