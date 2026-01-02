@@ -5,7 +5,6 @@ import com.akuleshov7.ktoml.TomlIndentation
 import com.akuleshov7.ktoml.TomlInputConfig
 import com.akuleshov7.ktoml.TomlOutputConfig
 import fyi.pauli.solembum.extensions.internal.InternalSolembumApi
-import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
@@ -49,23 +48,26 @@ public val configToml: Toml = Toml(
  */
 @InternalSolembumApi
 public inline fun <reified C> loadConfig(path: Path, defaultConfig: C): C {
-	val fileSystem = SystemFileSystem
-	val sink = fileSystem.sink(path).buffered()
-	val source = fileSystem.source(path).buffered()
+	if (!SystemFileSystem.exists(path)) {
+		path.parent?.let(SystemFileSystem::createDirectories)
+		return writeConfig(defaultConfig, path)
+	}
 
+	val source = SystemFileSystem.source(path).buffered()
 	val text = source.readString()
 
 	if (text.isNotEmpty()) return try {
-		return configToml.decodeFromString<C>(text)
-	} catch (e: Exception) {
-		writeConfig(sink, defaultConfig)
+		configToml.decodeFromString<C>(text)
+	} catch (_: Exception) {
+		writeConfig(defaultConfig, path)
 	}
 
-	return writeConfig(sink, defaultConfig)
+	return writeConfig(defaultConfig, path)
 }
 
 @InternalSolembumApi
-public inline fun <reified C> writeConfig(sink: Sink, config: C): C {
+public inline fun <reified C> writeConfig(config: C, path: Path): C {
+	val sink = SystemFileSystem.sink(path).buffered()
 	val defaultText = configToml.encodeToString(config)
 	sink.writeString(defaultText)
 	sink.flush()
