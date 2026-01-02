@@ -10,8 +10,8 @@ kotlin {
   compilerOptions {
     freeCompilerArgs.add("-Xexpect-actual-classes")
 
-    apiVersion = KotlinVersion.KOTLIN_2_2
-    languageVersion = KotlinVersion.KOTLIN_2_2
+    apiVersion = KotlinVersion.KOTLIN_2_3
+    languageVersion = KotlinVersion.KOTLIN_2_3
   }
 
   jvm()

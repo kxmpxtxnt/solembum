@@ -24,7 +24,7 @@ mavenPublishing {
     name = project.name
     description = project.description
 
-    inceptionYear = "2025"
+    inceptionYear = "2023"
 
     url = "https://github.com/kxmpxtxnt/solembum"
 
@@ -55,6 +55,6 @@ mavenPublishing {
 tasks.register("publishAllPublicationsToAllRepositories") {
   dependsOn(
     "publishAllPublicationsToPauliRepository",
-    "publishAllPublicationsToMavenCentralRepository"
+    //"publishAllPublicationsToMavenCentralRepository"
   )
 }

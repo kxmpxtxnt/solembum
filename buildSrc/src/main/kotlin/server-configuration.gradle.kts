@@ -4,10 +4,10 @@ plugins {
 
 kotlin {
   sourceSets {
-    val ktorVersion = "3.2.3"
+    val ktorVersion = "3.3.3"
     val cryptographyVersion = "0.5.0"
-    val kotlinLoggingVersion = "7.0.13"
-    val koinVersion = "4.1.0"
+    val kotlinLoggingVersion = "7.0.14"
+    val koinVersion = "4.2.0"
 
     commonMain.dependencies {
       api(project(":nbt"))
@@ -15,7 +15,7 @@ kotlin {
 
       api("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
       api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0-RC")
 
       api("io.ktor:ktor-network:$ktorVersion")
       api("io.ktor:ktor-server-cio:$ktorVersion")
@@ -48,7 +48,7 @@ kotlin {
     }
 
     jvmTest.dependencies {
-      api("org.junit.jupiter:junit-jupiter-engine:5.13.4")
+      api("org.junit.jupiter:junit-jupiter-engine:6.0.1")
     }
 
     macosMain.dependencies {

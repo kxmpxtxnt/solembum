@@ -11,12 +11,12 @@ repositories {
 dependencies {
   fun plugin(id: String, version: String) = "$id:$id.gradle.plugin:$version"
 
-  val kotlinVersion = "2.2.10"
+  val kotlinVersion = "2.3.0"
 
   implementation(kotlin("gradle-plugin", kotlinVersion))
 
   compileOnly(plugin("org.jetbrains.kotlin.plugin.serialization", embeddedKotlinVersion))
   runtimeOnly(plugin("org.jetbrains.kotlin.plugin.serialization", kotlinVersion))
 
-  implementation(plugin("com.vanniktech.maven.publish", "0.34.0"))
+  implementation(plugin("com.vanniktech.maven.publish", "0.35.0"))
 }
