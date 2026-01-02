@@ -17,10 +17,12 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.internal.TaggedEncoder
+import kotlinx.serialization.modules.SerializersModule
 
 @OptIn(InternalSerializationApi::class)
 internal class MinecraftProtocolEncoder(
 	private val output: Buffer,
+	override val serializersModule: SerializersModule,
 ) : TaggedEncoder<ProtocolDesc>() {
 
 	override fun SerialDescriptor.getTag(index: Int): ProtocolDesc {
@@ -98,7 +100,7 @@ internal class MinecraftProtocolEncoder(
 	@OptIn(ExperimentalSerializationApi::class)
 	override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
 		return when (descriptor.kind) {
-			StructureKind.CLASS, StructureKind.LIST -> MinecraftProtocolEncoder(output)
+			StructureKind.CLASS, StructureKind.LIST -> MinecraftProtocolEncoder(output, serializersModule)
 			else -> super.beginStructure(descriptor)
 		}
 	}

@@ -15,14 +15,14 @@ public class MinecraftProtocol(
 ) : BinaryFormat {
 
 	public override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
-		val decoder = MinecraftProtocolDecoder(Buffer().also { it.write(bytes) })
+		val decoder = MinecraftProtocolDecoder(Buffer().apply { write(bytes) }, serializersModule)
 
 		return decoder.decodeSerializableValue(deserializer)
 	}
 
 	public override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
 		val buffer = Buffer()
-		val encoder = MinecraftProtocolEncoder(buffer)
+		val encoder = MinecraftProtocolEncoder(buffer, serializersModule)
 		encoder.encodeSerializableValue(serializer, value)
 
 		return buffer.readByteArray()

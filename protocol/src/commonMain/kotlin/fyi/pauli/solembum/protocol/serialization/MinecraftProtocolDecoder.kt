@@ -19,10 +19,11 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import kotlinx.serialization.internal.TaggedDecoder
+import kotlinx.serialization.modules.SerializersModule
 
 
 @OptIn(InternalSerializationApi::class, ExperimentalSerializationApi::class)
-internal class MinecraftProtocolDecoder(private val input: Buffer) : TaggedDecoder<ProtocolDesc>() {
+internal class MinecraftProtocolDecoder(private val input: Buffer, override val serializersModule: SerializersModule) : TaggedDecoder<ProtocolDesc>() {
 	private var currentIndex = 0
 	override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
 		return if (descriptor.elementsCount == currentIndex) DECODE_DONE
@@ -115,8 +116,8 @@ internal class MinecraftProtocolDecoder(private val input: Buffer) : TaggedDecod
 
 	override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
 		return when (descriptor.kind) {
-			StructureKind.CLASS, StructureKind.LIST -> MinecraftProtocolDecoder(input)
-			else -> MinecraftProtocolDecoder(input)
+			StructureKind.CLASS, StructureKind.LIST -> MinecraftProtocolDecoder(input, serializersModule)
+			else -> MinecraftProtocolDecoder(input, serializersModule)
 		}
 	}
 }
