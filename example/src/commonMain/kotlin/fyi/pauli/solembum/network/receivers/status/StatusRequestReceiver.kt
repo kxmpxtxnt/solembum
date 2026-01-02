@@ -48,13 +48,13 @@ public object StatusRequestReceiver : PacketReceiver<StatusRequest>, KoinCompone
 		public class Players(
 			public var max: Int = 100,
 			public var online: Int = 0,
-			public var sample: List<PreviewPlayer> = listOf(),
+			public var sample: List<PreviewPlayer> = emptyList(),
 		) {
 
 			@Serializable
 			public class PreviewPlayer(
-				public var name: String = "btwonion",
-				public var id: Uuid = Uuid.parse("84c7eef5-ae2c-4ebb-a006-c3ee07643d79"),
+				public var name: String,
+				public var id: Uuid,
 			) {
 
 				public companion object {
