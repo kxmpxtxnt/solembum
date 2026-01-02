@@ -229,15 +229,13 @@ public abstract class Server(private val serverName: String) : CoroutineScope, K
 			logger.debug { "CONNECTED (Socket: ${connection.socket.remoteAddress})" }
 
 			launch {
-				val job = handle.handleIncoming()
 				try {
-					job.start()
+					handle.handleIncoming()
 				} catch (e: Throwable) {
 					if (e !is ClosedReceiveChannelException) logger.error(e) {
 						"Error in channel"
 					}
 				} finally {
-					job.cancel()
 					handles.remove(handle)
 					connection.input.cancel()
 					connection.output.flushAndClose()

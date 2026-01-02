@@ -10,9 +10,7 @@ import fyi.pauli.solembum.protocol.serialization.types.primitives.VarIntSerializ
 import fyi.pauli.solembum.server.Server
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -43,31 +41,27 @@ public class PacketHandle(
 	 * @see fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
 	 */
 	public suspend fun sendPacket(packet: OutgoingPacket) {
-		withContext(server.coroutineContext) {
-			launch {
-				val encoded = server.mcProtocol.encodeToByteArray(packet)
-				val length = encoded.size
+		val encoded = server.mcProtocol.encodeToByteArray(packet)
+		val length = encoded.size
 
-				if (!compression) {
-					connection.output.writeFully(Buffer().also { buffer ->
-						writeVarInt(length, buffer::writeByte)
-						buffer.write(encoded)
-					}.readByteArray())
-				} else {
-					val lengthLength = varIntBytesCount(length)
-					val compressed = Compressor.compress(encoded)
-					val compressedLength = compressed.size
-					connection.output.writeFully(Buffer().also { buffer ->
-						writeVarInt(compressedLength + lengthLength, buffer::writeByte)
-						writeVarInt(length, buffer::writeByte)
-						buffer.write(compressed)
-					}.readByteArray())
-					connection.output.flush()
-				}
-
-				server.logger.debug { "SENT packet ${packet.debugName} with id ${packet.id} in state ${packet.state}. [Compression: $compression, Socket: ${connection.socket.remoteAddress}]" }
-			}
+		if (!compression) {
+			connection.output.writeFully(Buffer().also { buffer ->
+				writeVarInt(length, buffer::writeByte)
+				buffer.write(encoded)
+			}.readByteArray())
+		} else {
+			val lengthLength = varIntBytesCount(length)
+			val compressed = Compressor.compress(encoded)
+			val compressedLength = compressed.size
+			connection.output.writeFully(Buffer().also { buffer ->
+				writeVarInt(compressedLength + lengthLength, buffer::writeByte)
+				writeVarInt(length, buffer::writeByte)
+				buffer.write(compressed)
+			}.readByteArray())
+			connection.output.flush()
 		}
+
+		server.logger.debug { "SENT packet ${packet.debugName} with id ${packet.id} in state ${packet.state}. [Compression: $compression, Socket: ${connection.socket.remoteAddress}]" }
 	}
 
 	/**
@@ -75,7 +69,7 @@ public class PacketHandle(
 	 * @author Paul Kindler
 	 * @since 01/11/2023
 	 */
-	internal suspend fun handleIncoming(): Job {
+	internal suspend fun handleIncoming() = coroutineScope {
 		while (true) {
 			val length = VarIntSerializer.readVarInt { connection.input.readByte() }
 			val secondInt = VarIntSerializer.readVarInt { connection.input.readByte() }
@@ -86,13 +80,11 @@ public class PacketHandle(
 
 				val data = if (size > 0) ByteArray(size) { connection.input.readByte() } else byteArrayOf()
 
-				server.launch {
-					IncomingPacketHandler.deserializeAndHandle(
-						RawPacket.Found(secondInt, length, data),
-						this@PacketHandle,
-						server
-					)
-				}
+				IncomingPacketHandler.deserializeAndHandle(
+					RawPacket.Found(secondInt, length, data),
+					this@PacketHandle,
+					server
+				)
 
 				continue
 			}
@@ -103,9 +95,8 @@ public class PacketHandle(
 			val id = VarIntSerializer.readVarInt { decompressedBuffer.readByte() }
 			val idLength = varIntBytesCount(id)
 			val data = ByteArray(secondInt - idLength) { decompressedBuffer.readByte() }
-			server.launch {
-				IncomingPacketHandler.deserializeAndHandle(RawPacket.Found(secondInt, length, data), this@PacketHandle, server)
-			}
+
+			IncomingPacketHandler.deserializeAndHandle(RawPacket.Found(secondInt, length, data), this@PacketHandle, server)
 		}
 	}
 }

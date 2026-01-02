@@ -12,9 +12,9 @@ public object HandshakeReceiver : PacketReceiver<Handshake> {
 		server: Server,
 	) {
 		server.logger.debug {
-			"SWITCHED state ${packetHandle.state} to ${packet.nextState} (Socket: ${packetHandle.connection.socket.remoteAddress})"
+			"SWITCHED state ${packetHandle.state} to ${packet.intent} (Socket: ${packetHandle.connection.socket.remoteAddress})"
 		}
 
-		packetHandle.state = packet.nextState
+		packetHandle.state = packet.intent
 	}
 }
