@@ -13,7 +13,7 @@ kotlin {
       api(project(":nbt"))
       api(project(":protocol"))
 
-      api("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+      api("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1-0.6.x-compat")
       api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
       api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0-RC")
 
