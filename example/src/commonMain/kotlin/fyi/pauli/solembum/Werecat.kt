@@ -9,6 +9,7 @@ import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 import org.koin.core.component.inject
 
@@ -36,4 +37,6 @@ public object Werecat : Server("Werecat") {
 	}
 }
 
-public suspend fun main(): Unit = serve(Werecat)
+public suspend fun main(): Unit = serve(Werecat) {
+	config(Path("./subpath/custom_config.toml"), ExampleConfig("Example"))
+}
