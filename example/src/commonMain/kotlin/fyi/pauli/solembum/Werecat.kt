@@ -16,6 +16,7 @@ import org.koin.core.component.inject
 public object Werecat : Server("Werecat") {
 
 	public val serverConfig: ServerConfig by inject()
+	public val exampleConfig: ExampleConfig by inject()
 
 	public val json: Json = Json {
 		encodeDefaults = true
@@ -28,6 +29,7 @@ public object Werecat : Server("Werecat") {
 	}
 
 	override suspend fun startup() {
+		logger.info { exampleConfig.exampleConfigValue }
 		IncomingPacketHandler.registerJoinPackets()
 		PacketReceivers.registerVanillaReceivers()
 	}

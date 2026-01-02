@@ -97,8 +97,6 @@ public class PacketHandle(
 				continue
 			}
 
-			println("Why are we here")
-
 			val compressedArray = ByteArray(length - secondIntLength) { connection.input.readByte() }
 			val decompressedBuffer = Buffer().also { it.write(Compressor.decompress(compressedArray)) }
 
