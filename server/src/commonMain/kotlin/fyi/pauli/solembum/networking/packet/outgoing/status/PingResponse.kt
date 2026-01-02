@@ -3,15 +3,17 @@ package fyi.pauli.solembum.networking.packet.outgoing.status
 import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
 import fyi.pauli.solembum.protocol.serialization.types.NumberType
+import kotlinx.serialization.Serializable
 
 /**
  * The response packet for PingRequest.
  *
  * @param timestamp Should be the same as sent by the client.
  */
+@Serializable
 public data class PingResponse(
 	@NumberType var timestamp: Long,
-) : OutgoingPacket() {
+) : OutgoingPacket {
 
 	override val id: Int
 		get() = 0x01

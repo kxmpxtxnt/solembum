@@ -1,14 +1,13 @@
 package fyi.pauli.solembum.networking.packet.outgoing
 
 import fyi.pauli.solembum.networking.packet.State
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-public abstract class OutgoingPacket {
-	public abstract val id: Int
+public interface OutgoingPacket {
+	public val id: Int
 
-	@Transient
-	public abstract val state: State
+	public val state: State
 
-	@Transient
-	public abstract val debugName: String
+	public val debugName: String
 }

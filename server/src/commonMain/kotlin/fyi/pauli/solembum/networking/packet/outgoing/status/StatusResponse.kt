@@ -2,6 +2,7 @@ package fyi.pauli.solembum.networking.packet.outgoing.status
 
 import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
 /**
@@ -12,7 +13,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class StatusResponse(
 	var status: String,
-) : OutgoingPacket() {
+) : OutgoingPacket {
+
 	override val id: Int
 		get() = 0x00
 
