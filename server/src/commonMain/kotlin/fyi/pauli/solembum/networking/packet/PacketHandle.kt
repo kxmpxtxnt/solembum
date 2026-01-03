@@ -34,7 +34,6 @@ public class PacketHandle(
 	internal val server: Server,
 ) {
 
-
 	@Suppress("unchecked_cast")
 	public suspend fun sendPacket(packet: OutgoingPacket) {
 		@OptIn(InternalSerializationApi::class)
@@ -49,14 +48,7 @@ public class PacketHandle(
 			buffer.write(data)
 			connection.output.writeFully(buffer.readByteArray())
 		} else {
-			val lengthLength = VarInt.bytesCount(length)
-			val compressedData = Compressor.compress(data)
-			val compressedLength = compressedData.size
-			connection.output.writeFully(Buffer().apply {
-				VarInt.write(compressedLength + lengthLength, ::writeByte)
-				VarInt.write(length, ::writeByte)
-				write(compressedData)
-			}.readByteArray())
+			TODO("Handle compression")
 		}
 		connection.output.flush()
 		server.logger.debug { "SENT packet ${packet.debugName} with id ${packet.id} in state ${packet.state}. [Compression: $compression, Socket: ${connection.socket.remoteAddress}]" }
@@ -71,16 +63,15 @@ public class PacketHandle(
 		try {
 			while (!connection.socket.isClosed) {
 				val length = VarInt.read { connection.input.readByte() }
-				val secondInt = VarInt.read { connection.input.readByte() }
-				val secondIntLength = VarInt.bytesCount(secondInt)
+				val idOrDataLength = VarInt.read { connection.input.readByte() }
+				val lengthOfIdOrDataLength = VarInt.bytesCount(idOrDataLength)
 
 				if (!compression) {
-					val size = length - secondIntLength
-
+					val size = length - lengthOfIdOrDataLength
 					val data = if (size > 0) ByteArray(size) { connection.input.readByte() } else byteArrayOf()
 
 					IncomingPacketHandler.deserializeAndHandle(
-						RawPacket.Found(secondInt, length, data),
+						RawPacket.Found(idOrDataLength, length, data),
 						this@PacketHandle,
 						server
 					)
@@ -88,14 +79,7 @@ public class PacketHandle(
 					continue
 				}
 
-				val compressedArray = ByteArray(length - secondIntLength) { connection.input.readByte() }
-				val decompressedBuffer = Buffer().apply { write(Compressor.decompress(compressedArray)) }
-
-				val id = VarInt.read { decompressedBuffer.readByte() }
-				val idLength = VarInt.bytesCount(id)
-				val data = ByteArray(secondInt - idLength) { decompressedBuffer.readByte() }
-
-				IncomingPacketHandler.deserializeAndHandle(RawPacket.Found(secondInt, length, data), this@PacketHandle, server)
+				TODO("Handle compression")
 			}
 		} catch (_: EOFException) {
 			connection.socket.close()
