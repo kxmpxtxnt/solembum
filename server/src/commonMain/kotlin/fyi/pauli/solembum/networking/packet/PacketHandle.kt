@@ -40,44 +40,24 @@ public class PacketHandle(
 		@OptIn(InternalSerializationApi::class)
 		val serializer = packet::class.serializer() as KSerializer<OutgoingPacket>
 		val data = server.mcProtocol.encodeToByteArray(serializer, packet)
-
 		val length = data.size + VarInt.bytesCount(packet.id)
-		val buffer = Buffer()
 
 		if (!compression) {
 			val buffer = Buffer()
 			VarInt.write(length, buffer::writeByte)
 			VarInt.write(packet.id, buffer::writeByte)
 			buffer.write(data)
+			connection.output.writeFully(buffer.readByteArray())
 		} else {
-			val uncompressedLength = data.size + VarInt.bytesCount(packet.id)
-
-			if (uncompressedLength >= threshold) {
-				val uncompressedBuffer = Buffer()
-				VarInt.write(packet.id, uncompressedBuffer::writeByte)
-				uncompressedBuffer.write(data)
-
-				val compressedData = Compressor.compress(uncompressedBuffer.readByteArray())
-				val compressedLength = compressedData.size
-
-				val dataLengthSize = VarInt.bytesCount(uncompressedLength)
-				VarInt.write(compressedLength + dataLengthSize, buffer::writeByte)
-
-				VarInt.write(uncompressedLength, buffer::writeByte)
-
-				buffer.write(compressedData)
-			} else {
-				val packetSize = VarInt.bytesCount(packet.id) + data.size
-				val dataLengthSize = VarInt.bytesCount(0)
-
-				VarInt.write(packetSize + dataLengthSize, buffer::writeByte)
-				VarInt.write(0, buffer::writeByte)
-				VarInt.write(packet.id, buffer::writeByte)
-				buffer.write(data)
-			}
+			val lengthLength = VarInt.bytesCount(length)
+			val compressedData = Compressor.compress(data)
+			val compressedLength = compressedData.size
+			connection.output.writeFully(Buffer().apply {
+				VarInt.write(compressedLength + lengthLength, ::writeByte)
+				VarInt.write(length, ::writeByte)
+				write(compressedData)
+			}.readByteArray())
 		}
-
-		connection.output.writeFully(buffer.readByteArray())
 		connection.output.flush()
 		server.logger.debug { "SENT packet ${packet.debugName} with id ${packet.id} in state ${packet.state}. [Compression: $compression, Socket: ${connection.socket.remoteAddress}]" }
 	}
