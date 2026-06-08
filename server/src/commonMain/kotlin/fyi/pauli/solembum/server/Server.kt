@@ -3,6 +3,7 @@ package fyi.pauli.solembum.server
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.RSA
+import dev.whyoleg.cryptography.random.CryptographyRandom
 import fyi.pauli.solembum.config.ServerConfig
 import fyi.pauli.solembum.config.loadConfig
 import fyi.pauli.solembum.entity.player.Player
@@ -17,9 +18,7 @@ import io.ktor.client.*
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.io.files.Path
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
@@ -50,7 +49,7 @@ public suspend fun <S : Server> serve(server: S, init: S.() -> Unit = {}): Unit 
  * @author Paul Kindler
  * @since 14/11/2023
  */
-public abstract class Server(private val serverName: String) : CoroutineScope, KoinComponent {
+public abstract class Server(public val serverName: String) : CoroutineScope, KoinComponent {
 
 	/**
 	 * Module for all configurations you need to have at runtime.
@@ -68,11 +67,9 @@ public abstract class Server(private val serverName: String) : CoroutineScope, K
 	 * You only need to call this function one time in the init block. After you can just inject it.
 	 */
 	public inline fun <reified C> config(path: Path, fileConfiguration: C) {
+		loadConfig<C>(path, fileConfiguration)
 		configurationsModule.factory<C> {
-			loadConfig<C>(
-				path,
-				fileConfiguration
-			)
+			loadConfig<C>(path, fileConfiguration)
 		}
 	}
 
@@ -96,10 +93,10 @@ public abstract class Server(private val serverName: String) : CoroutineScope, K
 	 * Encryption keypair used for authentication.
 	 * @author Paul Kindler
 	 * @since 01/11/2023
-	 * @see RSA.OAEP.KeyPair
+	 * @see RSA.PKCS1.KeyPair
 	 */
-	public val encryptionPair: RSA.OAEP.KeyPair =
-		cryptographyProvider.get(RSA.OAEP).keyPairGenerator(1024.bits).generateKeyBlocking()
+	public val encryptionPair: RSA.PKCS1.KeyPair =
+		cryptographyProvider.get(RSA.PKCS1).keyPairGenerator(1024.bits).generateKeyBlocking()
 
 	/**
 	 * The kotlinx.serialization format for the Minecraft protocol.
@@ -111,7 +108,7 @@ public abstract class Server(private val serverName: String) : CoroutineScope, K
 	 * @author Paul Kindler
 	 * @since 01/11/2023
 	 */
-	public val verifyToken: ByteArray = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789".toByteArray()
+	public val verifyToken: ByteArray = CryptographyRandom.nextBytes(32)
 
 	/**
 	 * Collection of all current connections used for packet sending/receiving.
@@ -200,9 +197,7 @@ public abstract class Server(private val serverName: String) : CoroutineScope, K
 
 		startKoin {
 			logger(KoinLogger(logger))
-			modules(
-				configurationsModule
-			)
+			modules(configurationsModule)
 		}
 
 		startup()
@@ -215,24 +210,21 @@ public abstract class Server(private val serverName: String) : CoroutineScope, K
 			reusePort = true
 		}
 
-		logger.info {
-			"Server started successfully!"
-		}
+		logger.info { "Server started successfully!" }
 
 		while (!serverSocket.isClosed) {
 			val socket = serverSocket.accept()
 
-			val connection = Connection(socket, socket.openReadChannel(), socket.openWriteChannel())
-
-			val handle = connection.handle()
-
-			logger.debug { "CONNECTED (Socket: ${connection.socket.remoteAddress})" }
-
 			launch {
+				val connection = Connection(socket, socket.openReadChannel(), socket.openWriteChannel())
+
+				val handle = connection.handle()
+
+				logger.debug { "CONNECTED (Socket: ${connection.socket.remoteAddress})" }
 				try {
 					handle.handleIncoming()
 				} catch (e: Throwable) {
-					if (e !is ClosedReceiveChannelException) logger.error(e) {
+					logger.error(e) {
 						"Error in channel"
 					}
 				} finally {

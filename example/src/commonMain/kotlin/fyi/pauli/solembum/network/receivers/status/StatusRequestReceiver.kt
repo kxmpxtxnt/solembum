@@ -39,8 +39,8 @@ public object StatusRequestReceiver : PacketReceiver<StatusRequest>, KoinCompone
 
 		@Serializable
 		public class Version(
-			public var name: String = "1.21.11",
-			public var protocol: Int = 774,
+			public var name: String = "26.1.2",
+			public var protocol: Int = 775,
 		)
 
 		@Serializable

@@ -68,8 +68,12 @@ public inline fun <reified C> loadConfig(path: Path, defaultConfig: C): C {
 @InternalSolembumApi
 public inline fun <reified C> writeConfig(config: C, path: Path): C {
 	val sink = SystemFileSystem.sink(path).buffered()
-	val defaultText = configToml.encodeToString(config)
-	sink.writeString(defaultText)
-	sink.flush()
+	try {
+		val defaultText = configToml.encodeToString(config)
+		sink.writeString(defaultText)
+		sink.flush()
+	} finally {
+		sink.close()
+	}
 	return config
 }

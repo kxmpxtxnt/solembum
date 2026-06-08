@@ -6,12 +6,12 @@ import fyi.pauli.solembum.protocol.serialization.types.NumberType
 import kotlinx.serialization.Serializable
 
 /**
- * The response packet for PingRequest.
+ * The response packet for PongRequest.
  *
  * @param timestamp Should be the same as sent by the client.
  */
 @Serializable
-public data class PingResponse(
+public data class PongResponse(
 	@NumberType var timestamp: Long,
 ) : OutgoingPacket {
 
@@ -22,5 +22,5 @@ public data class PingResponse(
 		get() = State.STATUS
 
 	override val debugName: String
-		get() = "Ping Response"
+		get() = "Pong Response"
 }

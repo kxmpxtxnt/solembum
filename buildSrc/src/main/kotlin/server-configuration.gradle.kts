@@ -2,20 +2,28 @@ plugins {
   kotlin("multiplatform")
 }
 
+repositories {
+  maven("https://central.sonatype.com/repository/maven-snapshots/") {
+    content {
+      includeGroup("dev.whyoleg.cryptography")
+    }
+  }
+}
+
 kotlin {
   sourceSets {
-    val ktorVersion = "3.3.3"
-    val cryptographyVersion = "0.5.0"
-    val kotlinLoggingVersion = "7.0.14"
-    val koinVersion = "4.1.1"
+    val ktorVersion = "3.5.0"
+    val cryptographyVersion = "0.6.0"
+    val kotlinLoggingVersion = "8.0.4"
+    val koinVersion = "4.2.1"
 
     commonMain.dependencies {
       api(project(":nbt"))
       api(project(":protocol"))
 
-      api("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1-0.6.x-compat")
-      api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0-RC")
+      api("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0-0.6.x-compat")
+      api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
       api("io.ktor:ktor-network:$ktorVersion")
       api("io.ktor:ktor-server-cio:$ktorVersion")
@@ -48,7 +56,7 @@ kotlin {
     }
 
     jvmTest.dependencies {
-      api("org.junit.jupiter:junit-jupiter-engine:6.0.1")
+      api("org.junit.jupiter:junit-jupiter-engine:6.1.0")
     }
 
     macosMain.dependencies {

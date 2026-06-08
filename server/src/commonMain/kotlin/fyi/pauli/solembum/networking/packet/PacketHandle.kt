@@ -1,6 +1,6 @@
 package fyi.pauli.solembum.networking.packet
 
-import fyi.pauli.solembum.extensions.bytes.Compressor
+import dev.whyoleg.cryptography.operations.Cipher
 import fyi.pauli.solembum.networking.packet.incoming.IncomingPacketHandler
 import fyi.pauli.solembum.networking.packet.outgoing.OutgoingPacket
 import fyi.pauli.solembum.networking.serialization.RawPacket
@@ -8,9 +8,11 @@ import fyi.pauli.solembum.protocol.serialization.types.primitives.VarInt
 import fyi.pauli.solembum.server.Server
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.io.Buffer
 import kotlinx.io.EOFException
+import kotlinx.io.Source
 import kotlinx.io.readByteArray
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -31,6 +33,7 @@ public class PacketHandle(
 	public val connection: Connection,
 	public var threshold: Int = -1,
 	public var compression: Boolean = threshold > 0,
+	public var cipher: Cipher? = null,
 	internal val server: Server,
 ) {
 
@@ -41,16 +44,24 @@ public class PacketHandle(
 		val data = server.mcProtocol.encodeToByteArray(serializer, packet)
 		val length = data.size + VarInt.bytesCount(packet.id)
 
+		val buffer = Buffer()
+
 		if (!compression) {
-			val buffer = Buffer()
 			VarInt.write(length, buffer::writeByte)
 			VarInt.write(packet.id, buffer::writeByte)
 			buffer.write(data)
-			connection.output.writeFully(buffer.readByteArray())
 		} else {
 			TODO("Handle compression")
 		}
+
+		val output = when (cipher) {
+			null -> buffer.readByteArray()
+			else -> cipher!!.encrypt(buffer.readByteArray())
+		}
+
+		connection.output.writeFully(output)
 		connection.output.flush()
+
 		server.logger.debug { "SENT packet ${packet.debugName} with id ${packet.id} in state ${packet.state}. [Compression: $compression, Socket: ${connection.socket.remoteAddress}]" }
 	}
 
@@ -61,14 +72,21 @@ public class PacketHandle(
 	 */
 	internal suspend fun handleIncoming() = coroutineScope {
 		try {
+			val input = when (cipher) {
+				null -> connection.input
+				else -> ByteReadChannel(
+					cipher!!.decryptingSource(connection.input.asSource()) as Source
+				)
+			}
+
 			while (!connection.socket.isClosed) {
-				val length = VarInt.read { connection.input.readByte() }
-				val idOrDataLength = VarInt.read { connection.input.readByte() }
+				val length = VarInt.read { input.readByte() }
+				val idOrDataLength = VarInt.read { input.readByte() }
 				val lengthOfIdOrDataLength = VarInt.bytesCount(idOrDataLength)
 
 				if (!compression) {
 					val size = length - lengthOfIdOrDataLength
-					val data = if (size > 0) ByteArray(size) { connection.input.readByte() } else byteArrayOf()
+					val data = if (size > 0) ByteArray(size) { input.readByte() } else byteArrayOf()
 
 					IncomingPacketHandler.deserializeAndHandle(
 						RawPacket.Found(idOrDataLength, length, data),
@@ -82,7 +100,9 @@ public class PacketHandle(
 				TODO("Handle compression")
 			}
 		} catch (_: EOFException) {
-			connection.socket.close()
+			server.logger.debug { "CLOSED connection (Socket: ${connection.socket.remoteAddress})" }
+		} catch (_: ClosedReceiveChannelException) {
+			server.logger.debug { "CLOSED connection (Socket: ${connection.socket.remoteAddress})" }
 		} catch (e: Exception) {
 			server.logger.error(e) { "Error while reading from channel." }
 		}

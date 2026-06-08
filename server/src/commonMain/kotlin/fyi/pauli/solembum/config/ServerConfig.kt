@@ -35,6 +35,8 @@ public data class Server(
 	val port: Int = 25565,
 	val maxPacketSize: Int = 2_097_151,
 	val favIconPath: String = "./favicon.png",
+	val encryption: Encryption = Encryption(),
+	val auth: Auth = Auth()
 ) {
 
 	/**
@@ -52,4 +54,15 @@ public data class Server(
 
 		return source.readByteArray().encodeBase64()
 	}
+
+	@Serializable
+	public data class Encryption(
+		val enabled: Boolean = true
+	)
+
+	@Serializable
+	public data class Auth(
+		val enabled: Boolean = true,
+		val mojangAuth: Boolean = true
+	)
 }
