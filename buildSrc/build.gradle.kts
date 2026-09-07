@@ -17,7 +17,7 @@ repositories {
 dependencies {
   fun plugin(id: String, version: String) = "$id:$id.gradle.plugin:$version"
 
-  val kotlinVersion = "2.4.0"
+  val kotlinVersion = "2.4.20"
 
   implementation(kotlin("gradle-plugin", kotlinVersion))
 
