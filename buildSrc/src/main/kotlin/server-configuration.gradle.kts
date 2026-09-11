@@ -12,10 +12,10 @@ repositories {
 
 kotlin {
   sourceSets {
-    val ktorVersion = "3.5.0"
+    val ktorVersion = "3.5.2"
     val cryptographyVersion = "0.6.0"
     val kotlinLoggingVersion = "8.0.4"
-    val koinVersion = "4.2.1"
+    val koinVersion = "4.2.2"
 
     commonMain.dependencies {
       api(project(":nbt"))
@@ -48,7 +48,7 @@ kotlin {
     }
 
     commonTest.dependencies {
-      api("io.insert-koin:koin-test:$koinVersion")
+      implementation("io.insert-koin:koin-test:$koinVersion")
     }
 
     jvmMain.dependencies {
@@ -56,7 +56,7 @@ kotlin {
     }
 
     jvmTest.dependencies {
-      api("org.junit.jupiter:junit-jupiter-engine:6.1.0")
+      implementation("org.junit.jupiter:junit-jupiter-engine:6.1.3")
     }
 
     macosMain.dependencies {

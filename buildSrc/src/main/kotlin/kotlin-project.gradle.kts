@@ -8,10 +8,10 @@ kotlin {
   explicitApi()
 
   compilerOptions {
-    freeCompilerArgs.add("-Xexpect-actual-classes")
+    freeCompilerArgs.addAll("-Xexpect-actual-classes")
 
-    apiVersion = KotlinVersion.KOTLIN_2_3
-    languageVersion = KotlinVersion.KOTLIN_2_3
+    apiVersion = KotlinVersion.KOTLIN_2_4
+    languageVersion = KotlinVersion.KOTLIN_2_4
   }
 
   jvm()
@@ -21,7 +21,6 @@ kotlin {
 
   mingwX64()
 
-  macosX64()
   macosArm64()
 
   applyDefaultHierarchyTemplate()
