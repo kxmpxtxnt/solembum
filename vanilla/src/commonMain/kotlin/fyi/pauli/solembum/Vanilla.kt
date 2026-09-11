@@ -11,7 +11,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.io.files.Path
 import kotlinx.serialization.json.Json
 
-public object Werecat : Server("Werecat") {
+public object Vanilla : Server("Vanilla") {
 
 	public val json: Json = Json {
 		encodeDefaults = true
@@ -33,6 +33,6 @@ public object Werecat : Server("Werecat") {
 	}
 }
 
-public suspend fun main(): Unit = serve(Werecat) {
-	config(Path("./subpath/custom_config.toml"), ExampleConfig("Example"))
+public suspend fun main(): Unit = serve(Vanilla) {
+	config(Path("./subpath/custom_config.toml"), VanillaExampleConfig("Example"))
 }
