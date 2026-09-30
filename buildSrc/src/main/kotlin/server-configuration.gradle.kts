@@ -12,7 +12,7 @@ repositories {
 
 kotlin {
   sourceSets {
-    val ktorVersion = "3.5.2"
+    val ktorVersion = "3.6.0"
     val cryptographyVersion = "0.6.0"
     val kotlinLoggingVersion = "8.0.4"
     val koinVersion = "4.2.2"
