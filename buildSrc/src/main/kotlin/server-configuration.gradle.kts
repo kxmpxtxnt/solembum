@@ -23,7 +23,7 @@ kotlin {
 
       api("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0-0.6.x-compat")
       api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
-      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
 
       api("io.ktor:ktor-network:$ktorVersion")
       api("io.ktor:ktor-server-cio:$ktorVersion")
