@@ -12,9 +12,9 @@ repositories {
 
 kotlin {
   sourceSets {
-    val ktorVersion = "3.6.0"
+    val ktorVersion = "3.6.1"
     val cryptographyVersion = "0.6.0"
-    val kotlinLoggingVersion = "8.0.4"
+    val kotlinLoggingVersion = "8.0.6"
     val koinVersion = "4.2.2"
 
     commonMain.dependencies {
@@ -23,7 +23,7 @@ kotlin {
 
       api("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0-0.6.x-compat")
       api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
-      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+      api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
 
       api("io.ktor:ktor-network:$ktorVersion")
       api("io.ktor:ktor-server-cio:$ktorVersion")
