@@ -1,6 +1,6 @@
 package fyi.pauli.solembum.tests
 
-import fyi.pauli.solembum.extensions.bytes.Compressor
+import fyi.pauli.solembum.internal.compression.Compressor
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test

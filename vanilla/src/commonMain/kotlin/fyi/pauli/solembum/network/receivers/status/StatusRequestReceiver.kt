@@ -1,8 +1,8 @@
 package fyi.pauli.solembum.network.receivers.status
 
-import fyi.pauli.solembum.Werecat.json
+import fyi.pauli.solembum.Vanilla.json
 import fyi.pauli.solembum.config.ServerConfig
-import fyi.pauli.solembum.entity.player.Player
+import fyi.pauli.solembum.server.entity.player.Player
 import fyi.pauli.solembum.networking.packet.PacketHandle
 import fyi.pauli.solembum.networking.packet.PacketReceiver
 import fyi.pauli.solembum.networking.packet.incoming.status.StatusRequest
@@ -23,31 +23,47 @@ public object StatusRequestReceiver : PacketReceiver<StatusRequest>, KoinCompone
 		server: Server,
 	) {
 
-		packetHandle.sendPacket(StatusResponse(json.encodeToString(ServerPreview())))
-
+		packetHandle.sendPacket(
+			StatusResponse(
+				json.encodeToString(
+					ServerPreview(
+						ServerPreview.Version("26.2", 776),
+						ServerPreview.Players(
+							serverConfig.server.players.maxPlayers,
+							server.players.size,
+							server.players.map(ServerPreview.Players.PreviewPlayer::fromPlayer)
+						),
+						ServerPreview.Description(serverConfig.server.description),
+						serverConfig.server.base64FavIcon(),
+						enforceSecureChat = true,
+						previewsChat = true
+					)
+				)
+			)
+		)
 	}
 
 	@Serializable
 	public class ServerPreview(
-		public var version: Version = Version(),
-		public var players: Players = Players(),
-		public var description: Description = Description(),
-		public var favicon: String = "data:image/png;base64,${serverConfig.server.base64FavIcon()}",
-		public var enforceSecureChat: Boolean = true,
-		public var previewsChat: Boolean = true,
+		public var version: Version,
+		public var players: Players,
+		public var description: Description,
+		public var favicon: String,
+		public var enforceSecureChat: Boolean,
+		public var previewsChat: Boolean,
 	) {
 
 		@Serializable
 		public class Version(
-			public var name: String = "26.1.2",
-			public var protocol: Int = 775,
+			public var name: String,
+			public var protocol: Int,
 		)
 
 		@Serializable
 		public class Players(
-			public var max: Int = 100,
-			public var online: Int = 0,
-			public var sample: List<PreviewPlayer> = emptyList(),
+			public var max: Int,
+			public var online: Int,
+			public var sample: List<PreviewPlayer>,
 		) {
 
 			@Serializable
@@ -65,7 +81,7 @@ public object StatusRequestReceiver : PacketReceiver<StatusRequest>, KoinCompone
 
 		@Serializable
 		public class Description(
-			public var text: String = "",
+			public var text: String,
 		)
 	}
 }

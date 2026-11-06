@@ -1,4 +1,4 @@
-package fyi.pauli.solembum.extensions.bytes
+package fyi.pauli.solembum.internal.compression
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream

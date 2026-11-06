@@ -1,7 +1,7 @@
 package fyi.pauli.solembum.tests
 
-import fyi.pauli.solembum.entity.player.Property
-import fyi.pauli.solembum.entity.player.UserProfile
+import fyi.pauli.solembum.server.entity.player.GameProfile
+import fyi.pauli.solembum.server.entity.player.Property
 import fyi.pauli.solembum.models.Identifier
 import fyi.pauli.solembum.nbt.extensions.buildCompoundTag
 import fyi.pauli.solembum.nbt.serialization.types.CompoundTag
@@ -19,7 +19,7 @@ class ProtocolObjectTests {
 		val identifier: Identifier,
 		val tag: CompoundTag,
 		val uuid: Uuid,
-		val userProfile: UserProfile,
+		val gameProfile: GameProfile,
 	)
 
 	@Test
@@ -27,10 +27,10 @@ class ProtocolObjectTests {
 		val objects = Objects(
 			Identifier("solembum", "test"),
 			buildCompoundTag {
-				put("inttest", 1)
+				put("int", 1)
 			},
 			Uuid.parse("df3706c0-c421-419f-9460-a64c15bc8b3f"),
-			UserProfile(
+			GameProfile(
 				Uuid.parse("df3706c0-c421-419f-9460-a64c15bc8b3f"),
 				"kxmpxtxnt",
 				listOf(Property("ojojojoj", "jojoj", "signature")),

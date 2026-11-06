@@ -1,11 +1,13 @@
 package fyi.pauli.solembum.config
 
+import io.ktor.server.application.serverConfig
 import io.ktor.util.*
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
+import kotlin.io.encoding.Base64
 
 /**
  * Whole configuration section of the server.
@@ -35,8 +37,10 @@ public data class Server(
 	val port: Int = 25565,
 	val maxPacketSize: Int = 2_097_151,
 	val favIconPath: String = "./favicon.png",
+	val description: String = "",
 	val encryption: Encryption = Encryption(),
-	val auth: Auth = Auth()
+	val auth: Auth = Auth(),
+	val players: Players = Players()
 ) {
 
 	/**
@@ -52,7 +56,7 @@ public data class Server(
 
 		val source = SystemFileSystem.source(path).buffered()
 
-		return source.readByteArray().encodeBase64()
+		return "data:image/png;base64,${Base64.encode(source.readByteArray())}"
 	}
 
 	@Serializable
@@ -64,5 +68,10 @@ public data class Server(
 	public data class Auth(
 		val enabled: Boolean = true,
 		val mojangAuth: Boolean = true
+	)
+
+	@Serializable
+	public data class Players(
+		val maxPlayers: Int = 255
 	)
 }

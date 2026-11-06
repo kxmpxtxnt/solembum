@@ -6,6 +6,7 @@ import fyi.pauli.solembum.networking.packet.RegisteredIncomingPacket
 import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.networking.packet.incoming.handshaking.Handshake
 import fyi.pauli.solembum.networking.packet.incoming.login.EncryptionResponse
+import fyi.pauli.solembum.networking.packet.incoming.login.LoginAcknowledged
 import fyi.pauli.solembum.networking.packet.incoming.login.LoginStart
 import fyi.pauli.solembum.networking.packet.incoming.status.PingRequest
 import fyi.pauli.solembum.networking.packet.incoming.status.StatusRequest
@@ -73,7 +74,8 @@ public object IncomingPacketHandler {
 
 		val loginPackets = listOf(
 			createLoginPacket(0x00, "Login Start", LoginStart::class),
-			createLoginPacket(0x01, "Encryption Response", EncryptionResponse::class)
+			createLoginPacket(0x01, "Encryption Response", EncryptionResponse::class),
+			createLoginPacket(0x03, "Login Acknowledged", LoginAcknowledged::class)
 		)
 
 		val configurationPackets = listOf<RegisteredIncomingPacket>()

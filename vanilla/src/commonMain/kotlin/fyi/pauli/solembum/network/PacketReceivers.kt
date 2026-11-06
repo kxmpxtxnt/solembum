@@ -3,6 +3,7 @@ package fyi.pauli.solembum.network
 import fyi.pauli.solembum.models.Identifier
 import fyi.pauli.solembum.network.receivers.handshake.HandshakeReceiver
 import fyi.pauli.solembum.network.receivers.login.EncryptionResponseReceiver
+import fyi.pauli.solembum.network.receivers.login.LoginAcknowledgedReceiver
 import fyi.pauli.solembum.network.receivers.login.LoginStartReceiver
 import fyi.pauli.solembum.network.receivers.status.PingRequestReceiver
 import fyi.pauli.solembum.network.receivers.status.StatusRequestReceiver
@@ -12,7 +13,7 @@ import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.networking.packet.incoming.IncomingPacket
 
 public object PacketReceivers {
-	private val identifier = Identifier("werecat", "vanilla-receiver")
+	private val identifier = Identifier("solembum", "vanilla-receivers")
 
 	@Suppress("UNCHECKED_CAST")
 	internal fun registerVanillaReceivers() {
@@ -32,5 +33,6 @@ public object PacketReceivers {
 
 		registerReceiver(State.LOGIN, 0x00, LoginStartReceiver)
 		registerReceiver(State.LOGIN, 0x01, EncryptionResponseReceiver)
+		registerReceiver(State.LOGIN, 0x03, LoginAcknowledgedReceiver)
 	}
 }

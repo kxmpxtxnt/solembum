@@ -6,9 +6,9 @@ import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.random.CryptographyRandom
 import fyi.pauli.solembum.config.ServerConfig
 import fyi.pauli.solembum.config.loadConfig
-import fyi.pauli.solembum.entity.player.Player
-import fyi.pauli.solembum.extensions.internal.InternalSolembumApi
-import fyi.pauli.solembum.extensions.koin.KoinLogger
+import fyi.pauli.solembum.server.entity.player.Player
+import fyi.pauli.solembum.internal.InternalSolembumApi
+import fyi.pauli.solembum.internal.koin.KoinLogger
 import fyi.pauli.solembum.networking.packet.PacketHandle
 import fyi.pauli.solembum.networking.packet.State
 import fyi.pauli.solembum.protocol.MinecraftProtocol
@@ -122,7 +122,7 @@ public abstract class Server(public val serverName: String) : CoroutineScope, Ko
 	 * Collection of all currently connected players.
 	 * @author Paul Kindler
 	 * @since 01/11/2023
-	 * @see fyi.pauli.solembum.entity.player.Player
+	 * @see Player
 	 */
 	public val players: MutableSet<Player> = mutableSetOf()
 
@@ -161,7 +161,7 @@ public abstract class Server(public val serverName: String) : CoroutineScope, Ko
 	 * @see CoroutineExceptionHandler
 	 */
 	private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-		logger.error(throwable) { throwable.stackTraceToString() }
+		logger.error(throwable){ }
 	}
 
 	/**
@@ -184,7 +184,6 @@ public abstract class Server(public val serverName: String) : CoroutineScope, Ko
 	 * Function used to initiate internal logic like koin or connection management.
 	 * Also executes [startup] when koin is started.
 	 */
-	@OptIn(KoinInternalApi::class)
 	@InternalSolembumApi
 	internal suspend fun internalStart() = coroutineScope {
 		Platform.setupPlatform()

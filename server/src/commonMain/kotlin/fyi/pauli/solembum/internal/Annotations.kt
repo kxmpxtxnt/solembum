@@ -1,4 +1,4 @@
-package fyi.pauli.solembum.extensions.internal
+package fyi.pauli.solembum.internal
 
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)

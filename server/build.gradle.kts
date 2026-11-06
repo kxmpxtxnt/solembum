@@ -8,7 +8,7 @@ plugins {
 kotlin {
   sourceSets {
     all {
-      languageSettings.optIn("fyi.pauli.solembum.extensions.internal.InternalSolembumApi")
+      languageSettings.optIn("fyi.pauli.solembum.internal.InternalSolembumApi")
     }
   }
 }

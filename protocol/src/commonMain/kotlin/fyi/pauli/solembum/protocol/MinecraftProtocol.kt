@@ -18,7 +18,7 @@ public class MinecraftProtocol(
 ) : BinaryFormat {
 
 	init {
-		serializersModule = serializersModule + SerializersModule {
+		serializersModule += SerializersModule {
 			contextual(Uuid::class, UuidSerializer)
 		}
 	}

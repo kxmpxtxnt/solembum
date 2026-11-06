@@ -19,6 +19,9 @@ public object LoginStartReceiver : PacketReceiver<LoginStart>, KoinComponent {
 		packetHandle: PacketHandle,
 		server: Server,
 	) {
+		packetHandle.packetContext.username = packet.name
+		packetHandle.packetContext.loginUuid = packet.uuid
+
 		if (config.server.encryption.enabled) {
 			packetHandle.sendPacket(EncryptionRequest(
 				server.serverName,

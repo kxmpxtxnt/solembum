@@ -1,4 +1,4 @@
-package fyi.pauli.solembum.extensions.koin
+package fyi.pauli.solembum.internal.koin
 
 import io.github.oshai.kotlinlogging.KLogger
 import org.koin.core.logger.Level

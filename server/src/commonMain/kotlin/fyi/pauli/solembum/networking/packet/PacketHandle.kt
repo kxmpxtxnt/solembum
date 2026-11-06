@@ -37,6 +37,8 @@ public class PacketHandle(
 	internal val server: Server,
 ) {
 
+	public val packetContext: PacketContext = PacketContext()
+
 	@Suppress("unchecked_cast")
 	public suspend fun sendPacket(packet: OutgoingPacket) {
 		@OptIn(InternalSerializationApi::class)

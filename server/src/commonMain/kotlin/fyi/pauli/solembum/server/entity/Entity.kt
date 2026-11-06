@@ -1,4 +1,4 @@
-package fyi.pauli.solembum.entity
+package fyi.pauli.solembum.server.entity
 
 /**
  * Super class of every entity in the game.
@@ -12,5 +12,5 @@ public interface Entity {
 	 * @author Paul Kindler
 	 * @since 01/11/2023
 	 */
-	public interface Creature : fyi.pauli.solembum.entity.Entity
+	public interface Creature : Entity
 }

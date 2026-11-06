@@ -1,7 +1,9 @@
-package fyi.pauli.solembum.entity.player
+package fyi.pauli.solembum.server.entity.player
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 import kotlin.uuid.Uuid
 
 /**
@@ -9,12 +11,11 @@ import kotlin.uuid.Uuid
  * @property uuid uuid of a connection.
  * @property username username of a connection-
  * @property properties list of properties of a connection.
- * @property profileActions list of actions of a connection.
  * @author Paul Kindler
  * @since 01/11/2023
  */
 @Serializable
-public data class UserProfile(
+public data class GameProfile(
 	@SerialName("id") val uuid: Uuid,
 	@SerialName("name") val username: String,
 	val properties: List<Property>,
@@ -33,7 +34,11 @@ public data class UserProfile(
 public data class Property(val name: String, val value: String, val signature: String)
 
 /**
- * TODO
+ * Actions set by Mojang.
+ *
+ * TODO: Add fitting response to those actions.
  */
-@Serializable
-public class ProfileAction
+public enum class ProfileAction {
+	FORCED_NAME_CHANGE,
+	USING_BANNED_SKIN
+}

@@ -1,4 +1,4 @@
-package fyi.pauli.solembum.extensions.bytes
+package fyi.pauli.solembum.internal.compression
 
 import kotlinx.cinterop.*
 import platform.posix.memset
@@ -13,7 +13,8 @@ internal actual object Compressor {
 	@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 	actual fun compress(input: ByteArray): ByteArray = memScoped {
 		// Allocate output buffer with maximum possible size
-		val maxOutputSize = compressBound(input.size.toULong()).toInt()
+		val sourceLen = input.size.toUInt().toULong() as uLong
+		val maxOutputSize = compressBound(sourceLen).toInt()
 		val output = ByteArray(maxOutputSize)
 
 		// Prepare input and output pointers
